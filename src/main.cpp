@@ -12,12 +12,12 @@ Camera2D camera;
 float zoomIncrement = 0.01f;
 
 float radius = 2.0f;
-float innerRange = 1.0f;
-float outerRange = 32.0f;
-float resistance = 0.997f;
+float innerRange = 0.3f;
+float outerRange = 1.0f;
+float resistance = 0.8f;
 
-int count = 512;
-int size = 48;
+int count = 4;
+int size = 4;
 int bound = size / 2;
 float cellSize = outerRange * 2.0f;
 

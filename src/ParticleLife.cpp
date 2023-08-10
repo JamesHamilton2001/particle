@@ -61,7 +61,7 @@ void ParticleLife::update()
                 other.vel.x += xForce;
                 other.vel.y += yForce;
             }
-            else if (distance <= diameter) {
+            else if (distance <= outerRange) {
                 float xNorm = (other.pos.x - particle.pos.x) / distance;
                 float yNorm = (other.pos.y - particle.pos.y) / distance;
                 float reactionCoef = attractions[particle.type][other.type] * (1.0f - distance / (outerRange - innerRange));
