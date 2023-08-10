@@ -5,19 +5,19 @@
 
 
 
-static int frameRate = 120;
+static int frameRate = 60;
 Vector2 screenSize = { 512, 512 };
 
 Camera2D camera;
-float zoomIncrement = 0.125f;
+float zoomIncrement = 0.01f;
 
 float radius = 2.0f;
-float innerRange = 16.0f;
-float outerRange = 64.0f;
-float resistance = 0.99f;
+float innerRange = 1.0f;
+float outerRange = 32.0f;
+float resistance = 0.997f;
 
 int count = 512;
-int size = 16;
+int size = 48;
 int bound = size / 2;
 float cellSize = outerRange * 2.0f;
 
@@ -54,10 +54,10 @@ int main()
             ClearBackground(DARKGRAY);
             BeginMode2D(camera);
 
-                for (int i = -bound; i <= bound; i++) {
-                    DrawLine(i * cellSize, -bound * cellSize, i * cellSize, bound * cellSize, GRAY);
-                    DrawLine(-bound * cellSize, i * cellSize, bound * cellSize, i * cellSize, GRAY);
-                }
+                // for (int i = -bound; i <= bound; i++) {
+                //     DrawLine(i * cellSize, -bound * cellSize, i * cellSize, bound * cellSize, GRAY);
+                //     DrawLine(-bound * cellSize, i * cellSize, bound * cellSize, i * cellSize, GRAY);
+                // }
 
                 particleLife.draw(radius);
 
