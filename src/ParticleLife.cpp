@@ -16,12 +16,12 @@ ParticleLife::ParticleLife(int count, int size, int innerRange, int outerRange, 
     this->bounds = Vector2({(float) (size*outerRange), (float) (size*outerRange)});
     this->particles = new Particle[count];
 
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {
-            attractions[i][j] = (float) (GetRandomValue(-100, 100)) / 100.0f;
-        }
-        rangeColours[i].a = 127;
-    }
+    for (int i = 0; i < 3; i++)
+        rangeColours[i].a = 0;
+    
+    attractions[0][0] = 0.2f; attractions[0][1] = 0.5f; attractions[0][2] = 0.7f;
+    attractions[1][0] = 0.7f; attractions[1][1] = 0.6f; attractions[1][2] = 0.5f;
+    attractions[2][0] = 0.5f; attractions[2][1] = 0.2f; attractions[2][2] = 0.6f;
 
     for (int i = 0; i < count; i++) {
         float angle = (float) (GetRandomValue(0, 360));
@@ -53,24 +53,24 @@ void ParticleLife::update()
             if (distance <= innerRange) {
                 float xNorm = (other.pos.x - particle.pos.x) / distance;
                 float yNorm = (other.pos.y - particle.pos.y) / distance;
-                float reactionCoef = (1.0f - distance / innerRange);
+                float reactionCoef = distance / outerRange / innerRange - 1.0f;
                 float xForce = xNorm * reactionCoef;
                 float yForce = yNorm * reactionCoef;
-                particle.vel.x -= xForce;
-                particle.vel.y -= yForce;
-                other.vel.x += xForce;
-                other.vel.y += yForce;
+                particle.vel.x += xForce;
+                particle.vel.y += yForce;
+                other.vel.x -= xForce;
+                other.vel.y -= yForce;
             }
-            else if (distance <= diameter) {
+            else if (distance <= outerRange) {
                 float xNorm = (other.pos.x - particle.pos.x) / distance;
                 float yNorm = (other.pos.y - particle.pos.y) / distance;
-                float reactionCoef = attractions[particle.type][other.type] * (1.0f - distance / (outerRange - innerRange));
+                float reactionCoef = attractions[particle.type][other.type] * (1.0f - abs(2*distance/outerRange - 1.0f - innerRange) / 1.0f - innerRange);
                 float xForce = xNorm * reactionCoef;
                 float yForce = yNorm * reactionCoef;
-                particle.vel.x -= xForce;
-                particle.vel.y -= yForce;
-                other.vel.x += xForce;
-                other.vel.y += yForce;
+                particle.vel.x += xForce;
+                particle.vel.y += yForce;
+                other.vel.x -= xForce;
+                other.vel.y -= yForce;
             }
         }
 
@@ -80,14 +80,14 @@ void ParticleLife::update()
             particle.pos.y = (particle.pos.y > 0) ? -bounds.y : bounds.y;
     
 
-        particle.vel.x *= resistance;
-        particle.vel.y *= resistance;
+        particle.vel.x *= (1.0f - resistance);
+        particle.vel.y *= (1.0f - resistance);
 
         particle.pos = Vector2Add(particle.pos, particle.vel);
     }
 }
 
-void ParticleLife::draw(float radius)
+void ParticleLife::draw()
 {
     for (int i = 0; i < count; i++) {
         Particle& particle = particles[i];

@@ -5,19 +5,19 @@
 
 
 
-static int frameRate = 120;
+static int frameRate = 60;
 Vector2 screenSize = { 512, 512 };
 
 Camera2D camera;
-float zoomIncrement = 0.125f;
+float zoomIncrement = 0.4f;
 
 float radius = 2.0f;
-float innerRange = 16.0f;
-float outerRange = 64.0f;
-float resistance = 0.99f;
+float innerRange = 0.3f;
+float outerRange = 1.0f;
+float resistance = 0.15f;
 
-int count = 512;
-int size = 16;
+int count = 1024;
+int size = 24;
 int bound = size / 2;
 float cellSize = outerRange * 2.0f;
 
@@ -59,7 +59,7 @@ int main()
                     DrawLine(-bound * cellSize, i * cellSize, bound * cellSize, i * cellSize, GRAY);
                 }
 
-                particleLife.draw(radius);
+                particleLife.draw();
 
             EndMode2D();
         EndDrawing();

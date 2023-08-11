@@ -12,7 +12,7 @@ class ParticleLife
     ~ParticleLife();
 
     void update();
-    void draw(float radius);
+    void draw();
 
  private:
 
