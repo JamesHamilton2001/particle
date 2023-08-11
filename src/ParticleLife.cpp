@@ -96,11 +96,11 @@ void ParticleLife::draw()
             Color colour = colours[particle.type];
             int segSize = 36;
             for (int i = 0; i < 360; i+= segSize) {
-                rlColor4ub(colour.r, colour.g, colour.b, 127);
+                rlColor4ub(colour.r, colour.g, colour.b, 255);
                 rlVertex2f(particle.pos.x, particle.pos.y);
-                rlColor4ub(0, 0, 0, 0);
+                rlColor4ub(colour.r, colour.g, colour.b, 0);
                 rlVertex2f(particle.pos.x + sinf(DEG2RAD*i)*outerRange, particle.pos.y + cosf(DEG2RAD*i)*outerRange);
-                rlColor4ub(0, 0, 0, 0);
+                rlColor4ub(colour.r, colour.g, colour.b, 0);
                 rlVertex2f(particle.pos.x + sinf(DEG2RAD*(i + segSize))*outerRange, particle.pos.y + cosf(DEG2RAD*(i + segSize))*outerRange);
             }
         rlEnd();
