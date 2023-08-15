@@ -83,10 +83,6 @@ void ParticleLife::update(float step)
     // for each particle
     for (int i = 0; i < count; i++) {
 
-        // apply friction
-        newVelocity[i].x *= 1.0f - resistance;
-        newVelocity[i].y *= 1.0f - resistance;
-
         // bounce if bounds reached
         if (abs(position[i].x) > bounds.x) {
             newVelocity[i].x *= -1.0f;
@@ -95,6 +91,10 @@ void ParticleLife::update(float step)
             newVelocity[i].y *= -1.0f;
             position[i].y = (position[i].y > 0) ? bounds.y : -bounds.y;
         }
+
+        // apply friction
+        newVelocity[i].x *= 1.0f - resistance;
+        newVelocity[i].y *= 1.0f - resistance;
 
         // apply movement
         position[i].x += newVelocity[i].x;

@@ -38,7 +38,7 @@ int main()
     ParticleLife particleLife(count, size, innerRange, outerRange, resistance);
     InitWindow(screenSize.x, screenSize.y, "Particle Life");
     SetTargetFPS(frameRate);
-    camera.offset = { screenSize.x / 2.0f, screenSize.y / 2.0f };
+    camera.offset = { screenSize.x/2.0f, screenSize.y/2.0f };
     camera.target = { 0, 0 };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
@@ -62,17 +62,19 @@ int main()
         // run next step of simulation
         particleLife.update(0.1f);
 
-        // draw
+        // draw simulation
         BeginDrawing();
             ClearBackground(DARKGRAY);
             BeginMode2D(camera);
                 for (int i = -bound; i <= bound; i++) {
-                    DrawLine(i * cellSize, -bound * cellSize, i * cellSize, bound * cellSize, GRAY);
-                    DrawLine(-bound * cellSize, i * cellSize, bound * cellSize, i * cellSize, GRAY);
+                    DrawLine(i*cellSize, -bound*cellSize, i*cellSize, bound*cellSize, GRAY);
+                    DrawLine(-bound*cellSize, i*cellSize, bound*cellSize, i*cellSize, GRAY);
                 }
                 particleLife.draw();
             EndMode2D();
+
             DrawFPS(0, 0);
+
         EndDrawing();
     }
 
