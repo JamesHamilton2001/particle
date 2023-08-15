@@ -7,7 +7,20 @@
 
 
 
-ParticleLife::ParticleLife(int count, int size)
+ParticleLife::ParticleLife()
+{
+    
+}
+
+ParticleLife::~ParticleLife()
+{
+    delete [] types;
+    delete [] positions;
+    delete [] oldVelocities;
+    delete [] newVelocities;
+}
+
+void ParticleLife::init(int count, int size)
 {
     // settings
     this->count = count;
@@ -36,14 +49,6 @@ ParticleLife::ParticleLife(int count, int size)
         oldVelocities[i].y = sinf(angle);
         newVelocities[i] = oldVelocities[i];
     }
-}
-
-ParticleLife::~ParticleLife()
-{
-    delete [] types;
-    delete [] positions;
-    delete [] oldVelocities;
-    delete [] newVelocities;
 }
 
 void ParticleLife::update()

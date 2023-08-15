@@ -8,9 +8,10 @@ class ParticleLife
 {
 public:
 
-    ParticleLife(int count, int size);
+    ParticleLife();
     ~ParticleLife();
 
+    void init(int count, int size);
     void update();
     void draw();
 
