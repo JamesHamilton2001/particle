@@ -9,40 +9,42 @@
 
 ParticleLife::ParticleLife(int count, int size, int innerRadius, int outerRadius, float resistance)
 {
+    // settings
     this->count = count;
     this->innerRadius = innerRadius;
     this->outerRadius = outerRadius;
     this->resistance = resistance;
     this->bounds = { (float)(size*outerRadius), (float)(size*outerRadius) };
     
-    types = new int[count];
-    positions = new Vector2[count];
-    oldVelocities = new Vector2[count];
-    newVelocities = new Vector2[count];
+    // particle data
+    type = new int[count];
+    position = new Vector2[count];
+    oldVelocity = new Vector2[count];
+    newVelocity = new Vector2[count];
 
+    // randomise attraction values
     for (int i = 0; i < 3; i++)
         for (int j = 0; j < 3; j++)
             attractions[i][j] = (float) (GetRandomValue(0, 100)) / 100.0f;
 
+    // randmouse type, position and velocity
     for (int i = 0; i < count; i++) {
         float angle = (float) (GetRandomValue(0, 360));
-        types[i] = GetRandomValue(0, 2);
-        positions[i].x = GetRandomValue(-bounds.x * 100, bounds.x * 100) / 100.0f;
-        positions[i].y = GetRandomValue(-bounds.x * 100, bounds.x * 100) / 100.0f;
-        std::cout << positions[i].x << std::endl;
-        std::cout << positions[i].y << std::endl << std::endl;
-        oldVelocities[i].x = -cosf(angle);
-        oldVelocities[i].y = sinf(angle);
-        newVelocities[i] = oldVelocities[i];
+        type[i] = GetRandomValue(0, 2);
+        position[i].x = GetRandomValue(-bounds.x * 100, bounds.x * 100) / 100.0f;
+        position[i].y = GetRandomValue(-bounds.x * 100, bounds.x * 100) / 100.0f;
+        oldVelocity[i].x = -cosf(angle);
+        oldVelocity[i].y = sinf(angle);
+        newVelocity[i] = oldVelocity[i];
     }
 }
 
 ParticleLife::~ParticleLife()
 {
-    delete [] types;
-    delete [] positions;
-    delete [] oldVelocities;
-    delete [] newVelocities;
+    delete [] type;
+    delete [] position;
+    delete [] oldVelocity;
+    delete [] newVelocity;
 }
 
 void ParticleLife::update(float step)
@@ -55,8 +57,8 @@ void ParticleLife::update(float step)
             if (i == j) continue;
 
             // get distance from other particle
-            float xDist = positions[j].x - positions[i].x;
-            float yDist = positions[j].y - positions[i].y;
+            float xDist = position[j].x - position[i].x;
+            float yDist = position[j].y - position[i].y;
             float distance = sqrtf(xDist*xDist + yDist*yDist);
 
             // if other particle within acting range
@@ -65,15 +67,15 @@ void ParticleLife::update(float step)
                 // get repulsions or attraction force from inner and outer radius cross over
                 float reactionCoef = (distance <= innerRadius)
                     ? 1.0f - distance / innerRadius
-                    : attractions[types[i]][types[j]] * (distance - innerRadius) / outerRadius;
+                    : attractions[type[i]][type[j]] * (distance - innerRadius) / outerRadius;
                 
                 // apply normalised force new velocities
                 float xForce = reactionCoef * xDist / distance;
                 float yForce = reactionCoef * yDist / distance;
-                newVelocities[i].x += xForce;
-                newVelocities[i].y += yForce;
-                newVelocities[j].x -= xForce;
-                newVelocities[j].y -= yForce;
+                newVelocity[i].x += xForce;
+                newVelocity[i].y += yForce;
+                newVelocity[j].x -= xForce;
+                newVelocity[j].y -= yForce;
             }
         }
     }
@@ -82,35 +84,37 @@ void ParticleLife::update(float step)
     for (int i = 0; i < count; i++) {
 
         // apply friction
-        newVelocities[i].x *= 1.0f - resistance;
-        newVelocities[i].y *= 1.0f - resistance;
+        newVelocity[i].x *= 1.0f - resistance;
+        newVelocity[i].y *= 1.0f - resistance;
 
-        // // bounce if bounds reached
-        if (abs(positions[i].x) > bounds.x) {
-            newVelocities[i].x *= -1.0f;
-            positions[i].x = (positions[i].x > 0) ? bounds.x : -bounds.x;
-        } if (abs(positions[i].y) > bounds.y) {
-            newVelocities[i].y *= -1.0f;
-            positions[i].y = (positions[i].y > 0) ? bounds.y : -bounds.y;
+        // bounce if bounds reached
+        if (abs(position[i].x) > bounds.x) {
+            newVelocity[i].x *= -1.0f;
+            position[i].x = (position[i].x > 0) ? bounds.x : -bounds.x;
+        } if (abs(position[i].y) > bounds.y) {
+            newVelocity[i].y *= -1.0f;
+            position[i].y = (position[i].y > 0) ? bounds.y : -bounds.y;
         }
 
-        // increment position by new velocity vector
-        positions[i].x += newVelocities[i].x;
-        positions[i].y += newVelocities[i].y;
+        // apply movement
+        position[i].x += newVelocity[i].x;
+        position[i].y += newVelocity[i].y;
         
         // set velocities for next step
-        oldVelocities[i].x = newVelocities[i].x;
-        oldVelocities[i].y = newVelocities[i].y;
+        oldVelocity[i].x = newVelocity[i].x;
+        oldVelocity[i].y = newVelocity[i].y;
     }
 }
 
 void ParticleLife::draw()
 {
+    // for each particle
     for (int i = 0; i < count; i++) {
-        Color colour = colours[types[i]];
-        float x = positions[i].x;
-        float y = positions[i].y;
+        Color colour = colours[type[i]];
+        float x = position[i].x;
+        float y = position[i].y;
 
+        // draw fading circle size of particles influence
         rlBegin(RL_TRIANGLES);
             for (int j = 0; j < 360; j += 36) {
                 rlColor4ub(colour.r, colour.g, colour.b, 255);
