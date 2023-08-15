@@ -21,6 +21,8 @@ int bound;
 Camera2D camera;
 ParticleLife particleLife;
 
+bool gridActive;
+
 
 void init();
 void update();
@@ -42,6 +44,9 @@ void init()
     camera.target = { 0, 0 };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
+
+    // scene
+    gridActive = true;
 
     // simulation
     count = 1024;
@@ -76,15 +81,15 @@ void render()
 
         // grid and particles
         BeginMode2D(camera);
-            for (int i = -bound; i <= bound; i++) {
-                DrawLine(i*2.0f, -bound*2.0f, i*2.0f, bound*2.0f, GRAY);
-                DrawLine(-bound*2.0f, i*2.0f, bound*2.0f, i*2.0f, GRAY);
-            }
+            if (gridActive)
+                for (int i = -bound; i <= bound; i++)
+                    DrawLine(2.0f*i, 2.0f*-bound, 2.0f*i, 2.0f*bound, GRAY),
+                    DrawLine(2.0f*-bound, 2.0f*i, 2.0f*bound, 2.0f*i, GRAY);
             particleLife.draw();
         EndMode2D();
 
         // user interface
-        DrawFPS(0, 0);
+        DrawFPS(windowWidth - 80, 5);
 
     EndDrawing();
 }
