@@ -1,34 +1,25 @@
 #include "ParticleLife.h"
+
 #include <raylib.h>
 #include <rlgl.h>
 #include <raymath.h>
+#include <iostream>
 
 
 
-static int frameRate = 60;
+int frameRate = 60;
 Vector2 screenSize = { 512, 512 };
 
 Camera2D camera;
-<<<<<<< HEAD
 float zoomIncrement = 0.4f;
-=======
-float zoomIncrement = 0.01f;
->>>>>>> 9e369970fa2b7dd52533fdd4db73eb7f9435e121
 
 float radius = 2.0f;
 float innerRange = 0.3f;
 float outerRange = 1.0f;
-<<<<<<< HEAD
 float resistance = 0.15f;
 
-int count = 1024;
+int count = 512;
 int size = 24;
-=======
-float resistance = 0.8f;
-
-int count = 4;
-int size = 4;
->>>>>>> 9e369970fa2b7dd52533fdd4db73eb7f9435e121
 int bound = size / 2;
 float cellSize = outerRange * 2.0f;
 
@@ -59,20 +50,18 @@ int main()
                 camera.zoom = zoomIncrement;
         }
 
-        particleLife.update();
+        particleLife.update(0.1f);
 
         BeginDrawing();
             ClearBackground(DARKGRAY);
             BeginMode2D(camera);
-
-                // for (int i = -bound; i <= bound; i++) {
-                //     DrawLine(i * cellSize, -bound * cellSize, i * cellSize, bound * cellSize, GRAY);
-                //     DrawLine(-bound * cellSize, i * cellSize, bound * cellSize, i * cellSize, GRAY);
-                // }
-
+                for (int i = -bound; i <= bound; i++) {
+                    DrawLine(i * cellSize, -bound * cellSize, i * cellSize, bound * cellSize, GRAY);
+                    DrawLine(-bound * cellSize, i * cellSize, bound * cellSize, i * cellSize, GRAY);
+                }
                 particleLife.draw();
-
             EndMode2D();
+            DrawFPS(0, 0);
         EndDrawing();
     }
 
