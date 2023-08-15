@@ -6,28 +6,28 @@
 
 class ParticleLife
 {
- public:
+public:
 
-    ParticleLife(int count, int size, int innerRange, int outerRange, float resistance);
+    ParticleLife(int count, int size);
     ~ParticleLife();
 
-    void update(float step);
+    void update();
     void draw();
 
- private:
+    float step;
+    float innerRadii[3];
+    float resistances[3];
+    float attractions[3][3];
+    Color colours[3];
+
+private:
 
     int count;
-    float innerRadius;
-    float outerRadius;
-    float resistance;
     Vector2 bounds;
 
-    Color colours[3] = { RED, GREEN, BLUE };
-    float attractions[3][3] = { 0.0f };
-
-    int* type;
-    Vector2* position;
-    Vector2* oldVelocity;
-    Vector2* newVelocity;
+    int* types;
+    Vector2* positions;
+    Vector2* oldVelocities;
+    Vector2* newVelocities;
 
 };
