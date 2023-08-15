@@ -30,17 +30,20 @@ void render();
 
 void init()
 {
+    // window
     windowWidth = 1600;
     windowHeight = 800;
     frameRate = 60;
     InitWindow(windowWidth, windowHeight, "Particle Life");
     SetTargetFPS(frameRate);
 
+    // camera
     camera.offset = { windowWidth/2.0f, windowHeight/2.0f };
     camera.target = { 0, 0 };
     camera.rotation = 0.0f;
     camera.zoom = 1.0f;
 
+    // simulation
     count = 1024;
     size = 16;
     bound = size/2;
