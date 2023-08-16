@@ -77,6 +77,7 @@ public:
     void update(Vector2 mousePos);
     void render();
     bool selectTextBox(Vector2 mousePos, TextBox& textBox);
+    bool gridOn();
 
 private:
 

@@ -95,6 +95,11 @@ bool UserInterface::selectTextBox(Vector2 mousePos, TextBox& textBox)
     return false;
 }
 
+bool UserInterface::gridOn()
+{
+    return gridBoolCheckBox.active;
+}
+
 
 
 void UserInterface::Label::init(const char text[BUFFER_LENGTH], Rectangle bounds)

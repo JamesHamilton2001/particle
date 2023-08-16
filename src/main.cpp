@@ -70,6 +70,19 @@ void update()
     // update ui
     userInterface.update(mouseWindowPosition);
 
+    // handle camera pan on right click + drag
+    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+        Vector2 scaledInvMouseDelta = Vector2Scale(GetMouseDelta(), -1.0f / camera.zoom);
+        camera.target = Vector2Add(camera.target, scaledInvMouseDelta);
+    }
+
+    // handle camera zoom on scroll
+    if (mouseWheelMovement != 0) {
+        camera.target = GetScreenToWorld2D(camera.offset, camera);
+        camera.zoom += (mouseWheelMovement * 2.0f);
+        if (camera.zoom < 2.0f) camera.zoom = 2.0f;
+    }
+
     // step over simulation
     particleLife.update();
 
@@ -143,18 +156,15 @@ void render()
 {
     BeginDrawing();
         ClearBackground(BLACK);
-
         BeginMode2D(camera);
-            // if (gridActive)
+            if (userInterface.gridOn())
                 for (int i = -bound; i <= bound; i++)
                     DrawLine(2.0f*i, 2.0f*-bound, 2.0f*i, 2.0f*bound, DARKGRAY),
                     DrawLine(2.0f*-bound, 2.0f*i, 2.0f*bound, 2.0f*i, DARKGRAY);
             particleLife.draw();
         EndMode2D();
-
-        // ui();
         userInterface.render();
-
+        DrawFPS(windowWidth - 80, 5);
     EndDrawing();
 }
 
@@ -189,15 +199,4 @@ void init()
         particleLife.attractions,
         particleLife.colours
     );
-
-    // // ui active option
-    // activeElementBoolPtr = nullptr;
-    // gridActive = false;
-    // stepTextBoxActive = false;
-
-    // // ui bounds
-    // sidebarBounds = { 0, 0, 200, (float)(windowHeight) };
-    // gridCheckBounds = { 80, 80, 20, 20 };
-    // stepTextBoxBounds = { 80, 100, 100, 20 };
-    // stepLabelBounds = { 0, 100, 80, 20 };
 }
