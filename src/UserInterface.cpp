@@ -29,8 +29,21 @@ void UserInterface::init(
 ) {
     sideBarBounds = { 0, 0, 200, (float)(windowHeight) };
 
-    gridBoolCheckBox.init("Grid", { 80, 80, 20, 20 });
-    stepTextBox.init("Step", { 80, 110, 100, 20 }, stepPtr, 0.0, 10000.0f);
+    float x, y, w, h;
+    
+    x = 80, y = 80, w = 20, h = 20;
+    gridBoolCheckBox.init("Grid", { x, y, w, h });
+
+    y += 30, w = 100;
+    stepTextBox.init("Step", { x, y, w, h }, stepPtr, 0.0, 10000.0f);
+
+    char rgb[3][1+1] = { "R", "G", "B" };
+    w = 40;
+    for (int i = 0; i < 3; i++) {
+        innerRadiusTextBoxes[i].init(rgb[i], { x, y+i*30, w, h }, &innerRadii[i], 0.0f, 1.0f);
+        resistanceTextBoxes[i].init(rgb[i], { x, y+i*30 ,w, h }, &resistances[i], 0.0f, 1.0f);
+        x += 60;
+    }
 }
 
 void UserInterface::update(Vector2 mousePos)
@@ -98,7 +111,6 @@ void UserInterface::TextBox::render()
 {
     GuiDrawText(label.text, label.bounds, TEXT_ALIGN_RIGHT, (isValid()) ? DARKGRAY : RED);
     GuiTextBox(bounds, text, BUFFER_LENGTH, active);
-    setText();
 }
 
 
@@ -109,6 +121,7 @@ void UserInterface::FloatTextBox::init(const char labelText[BUFFER_LENGTH], Rect
     this->valuePtr = valuePtr;
     this->min = min;
     this->max = max;
+    setText();
 }
 
 bool UserInterface::FloatTextBox::isValid()
