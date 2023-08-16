@@ -45,6 +45,14 @@ void UserInterface::init(
     }
     innerRadiusSet.init("Inner Radii Set", innerRadiusTextBoxes);
     resistanceSet.init("Resistance Set", resistanceTextBoxes);
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            attractionTextBoxes[i][j].init(labels[i], { x, y+i*60, w, h }, &attractions[i][j], -1.0f, 1.0f);
+        }
+        x += 60;
+    }
+    attractionSet.init("Attraction Set", attractionTextBoxes);
 }
 
 void UserInterface::update(Vector2 mousePos)
@@ -59,11 +67,11 @@ void UserInterface::update(Vector2 mousePos)
         bool selected = selectTextBox(mousePos, stepTextBox);
         for (int i = 0; i < 3; i++) {
             if (selected) break;
-            selected =  selectTextBox(mousePos, innerRadiusTextBoxes[i]) ||
-                        selectTextBox(mousePos, resistanceTextBoxes[i]) || (
-                            selectTextBox(mousePos, attractionTextBoxes[i][0]) ||
-                            selectTextBox(mousePos, attractionTextBoxes[i][1]) ||
-                            selectTextBox(mousePos, attractionTextBoxes[i][2]) );
+            selected =  selectTextBox(mousePos, innerRadiusTextBoxes[i])   ||
+                        selectTextBox(mousePos, resistanceTextBoxes[i])    ||
+                        selectTextBox(mousePos, attractionTextBoxes[i][0]) ||
+                        selectTextBox(mousePos, attractionTextBoxes[i][1]) ||
+                        selectTextBox(mousePos, attractionTextBoxes[i][2])  ;
         }
         if (!selected && activeTextBoxPtr != nullptr)
             activeTextBoxPtr->active = false,
@@ -79,6 +87,7 @@ void UserInterface::render()
     stepTextBox.render();
     innerRadiusSet.render();
     resistanceSet.render();
+    attractionSet.render();
 }
 
 bool UserInterface::selectTextBox(Vector2 mousePos, TextBox& textBox)
@@ -172,4 +181,20 @@ void UserInterface::FloatTextBoxSet::render()
 {
     GuiDrawText(label.text, label.bounds, TEXT_ALIGN_LEFT, DARKGRAY);
     for (int i = 0; i < 3; i++) floatTextBoxes[i].render();
+}
+
+
+
+void UserInterface::FloatTextBoxSet2D::init(const char labelText[BUFFER_LENGTH], FloatTextBox floatTextBoxes[3][3])
+{
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            floatTextBoxPtrs[i][j] = &floatTextBoxes[i][j];
+}
+
+void UserInterface::FloatTextBoxSet2D::render()
+{
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            floatTextBoxPtrs[i][j]->render();
 }

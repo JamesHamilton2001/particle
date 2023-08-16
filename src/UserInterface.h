@@ -58,6 +58,14 @@ class UserInterface
         Label label;
         FloatTextBox* floatTextBoxes;
     };
+    class FloatTextBoxSet2D {
+     public:
+        void init(const char labelText[BUFFER_LENGTH], FloatTextBox floatTextBoxes[3][3]);
+        void render();
+     private:
+        Label label;
+        FloatTextBox* floatTextBoxPtrs[3][3];
+    };
 
 public:
 
@@ -91,4 +99,6 @@ private:
 
     FloatTextBoxSet innerRadiusSet;
     FloatTextBoxSet resistanceSet;
+
+    FloatTextBoxSet2D attractionSet;
 };
