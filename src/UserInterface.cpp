@@ -28,9 +28,7 @@ void UserInterface::init(
     Color colours[3]
 ) {
     sideBarBounds = { 0, 0, 240, (float)(windowHeight) };
-
-    // char rgb[3][1+1] = { "R", "G", "B" };
-    char labels[3][2] = { "R", "G", "B" };
+    char labels[3][1+1] = { "R", "G", "B" };
     float x, y, w, h;
     
     x = 60, y = 200, w = 20, h = 20;
