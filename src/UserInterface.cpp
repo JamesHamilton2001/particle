@@ -33,16 +33,16 @@ void UserInterface::init(
     char labels[3][2] = { "R", "G", "B" };
     float x, y, w, h;
     
-    x = 60, y = 80, w = 20, h = 20;
+    x = 60, y = 200, w = 20, h = 20;
     gridBoolCheckBox.init("Grid", { x, y, w, h });
 
     y += 30, w = 100;
     stepTextBox.init("Step", { x, y, w, h }, stepPtr, 0.0, 10000.0f);
 
-    y += 40; w = 30;
+    y += 60; w = 30;
     for (int i = 0; i < 3; i++) {
         innerRadiusTextBoxes[i].init(labels[i], { x, y, w, h }, &innerRadii[i], 0.0f, 1.0f);
-        resistanceTextBoxes[i].init(labels[i], { x, y + 30, w, h }, &resistances[i], 0.0f, 1.0f);
+        resistanceTextBoxes[i].init(labels[i], { x, y + 60, w, h }, &resistances[i], 0.0f, 1.0f);
         x += 60;
     }
     innerRadiusSet.init("Inner Radii Set", innerRadiusTextBoxes);
@@ -81,10 +81,6 @@ void UserInterface::render()
     stepTextBox.render();
     innerRadiusSet.render();
     resistanceSet.render();
-    // for (int i = 0; i < 3; i++) {
-    //     innerRadiusTextBoxes[i].render();
-    //     resistanceTextBoxes[i].render();
-    // }
 }
 
 bool UserInterface::selectTextBox(Vector2 mousePos, TextBox& textBox)
@@ -162,18 +158,15 @@ void UserInterface::FloatTextBox::submit()
 void UserInterface::FloatTextBoxSet::init(const char labelText[BUFFER_LENGTH], FloatTextBox floatTextBoxes[3])
 {
     this->floatTextBoxes = floatTextBoxes;
-    label.init(
-        labelText, {
-            floatTextBoxes[0].bounds.x + (floatTextBoxes[2].bounds.x, - floatTextBoxes[0].bounds.x) / 2,
-            floatTextBoxes[0].bounds.y - floatTextBoxes[0].bounds.height,
-            floatTextBoxes[2].bounds.x + floatTextBoxes[2].bounds.width,
-            floatTextBoxes[0].bounds.height
-        }
-    );
+    float x = floatTextBoxes[0].bounds.x;
+    float y = floatTextBoxes[0].bounds.y - floatTextBoxes[0].bounds.height;
+    float w = floatTextBoxes[2].bounds.x + floatTextBoxes[2].bounds.width - floatTextBoxes[0].bounds.x;
+    float h = 20.0f;
+    label.init(labelText, { x, y, w, h });
 }
 
 void UserInterface::FloatTextBoxSet::render()
 {
-    GuiDrawText(label.text, label.bounds, TEXT_ALIGN_CENTER, DARKGRAY);
+    GuiDrawText(label.text, label.bounds, TEXT_ALIGN_LEFT, DARKGRAY);
     for (int i = 0; i < 3; i++) floatTextBoxes[i].render();
 }
