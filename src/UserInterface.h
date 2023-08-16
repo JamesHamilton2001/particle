@@ -11,7 +11,7 @@
 
 class UserInterface
 {
-    static const unsigned int BUFFER_LENGTH = 12u;
+    static const unsigned int BUFFER_LENGTH = 32u;
 
     class Label {
      public:
@@ -19,7 +19,8 @@ class UserInterface
         Rectangle bounds;
         char text[16];
     };
-    class Element { public:
+    class Element {
+     public:
         Rectangle bounds;
         Label label;
         bool active;
@@ -27,17 +28,20 @@ class UserInterface
         virtual void render() = 0;
     };
 
-    class CheckBox : public Element { public:
+    class CheckBox : public Element {
+     public:
         void render();
     };
-    class TextBox : public Element { public:
+    class TextBox : public Element {
+     public:
         char text[BUFFER_LENGTH];
         virtual bool isValid() = 0;
         virtual void setText() = 0;
         virtual void submit() = 0;
         void render();
     };
-    class FloatTextBox : public TextBox { public:
+    class FloatTextBox : public TextBox {
+     public:
         void init(const char labelText[BUFFER_LENGTH], Rectangle bounds, float* valuePtr, float min, float max);
         void setText();
         void submit();
@@ -45,6 +49,14 @@ class UserInterface
         float min, max;
         float* valuePtr;
         bool isValid();
+    };
+    class FloatTextBoxSet {
+     public:
+        void init(const char labelText[BUFFER_LENGTH], FloatTextBox floatTextBoxes[3]);
+        void render();
+     private:
+        Label label;
+        FloatTextBox* floatTextBoxes;
     };
 
 public:
@@ -75,5 +87,7 @@ private:
     FloatTextBox innerRadiusTextBoxes[3];
     FloatTextBox resistanceTextBoxes[3];
     FloatTextBox attractionTextBoxes[3][3];
-    //  colourTextBoxes[3];
+
+    FloatTextBoxSet innerRadiusSet;
+    FloatTextBoxSet resistanceSet;
 };

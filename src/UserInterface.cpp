@@ -27,23 +27,26 @@ void UserInterface::init(
     float attractions[3][3],
     Color colours[3]
 ) {
-    sideBarBounds = { 0, 0, 200, (float)(windowHeight) };
+    sideBarBounds = { 0, 0, 240, (float)(windowHeight) };
 
+    // char rgb[3][1+1] = { "R", "G", "B" };
+    char labels[3][2] = { "R", "G", "B" };
     float x, y, w, h;
     
-    x = 80, y = 80, w = 20, h = 20;
+    x = 60, y = 80, w = 20, h = 20;
     gridBoolCheckBox.init("Grid", { x, y, w, h });
 
     y += 30, w = 100;
     stepTextBox.init("Step", { x, y, w, h }, stepPtr, 0.0, 10000.0f);
 
-    char rgb[3][1+1] = { "R", "G", "B" };
-    w = 40;
+    y += 40; w = 30;
     for (int i = 0; i < 3; i++) {
-        innerRadiusTextBoxes[i].init(rgb[i], { x, y+i*30, w, h }, &innerRadii[i], 0.0f, 1.0f);
-        resistanceTextBoxes[i].init(rgb[i], { x, y+i*30 ,w, h }, &resistances[i], 0.0f, 1.0f);
+        innerRadiusTextBoxes[i].init(labels[i], { x, y, w, h }, &innerRadii[i], 0.0f, 1.0f);
+        resistanceTextBoxes[i].init(labels[i], { x, y + 30, w, h }, &resistances[i], 0.0f, 1.0f);
         x += 60;
     }
+    innerRadiusSet.init("Inner Radii Set", innerRadiusTextBoxes);
+    resistanceSet.init("Resistance Set", resistanceTextBoxes);
 }
 
 void UserInterface::update(Vector2 mousePos)
@@ -54,12 +57,21 @@ void UserInterface::update(Vector2 mousePos)
             activeTextBoxPtr->submit();
 
     // handle textbox selection
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-        if (selectTextBox(mousePos, stepTextBox));
-        else if (activeTextBoxPtr != nullptr)
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        bool selected = selectTextBox(mousePos, stepTextBox);
+        for (int i = 0; i < 3; i++) {
+            if (selected) break;
+            selected =  selectTextBox(mousePos, innerRadiusTextBoxes[i]) ||
+                        selectTextBox(mousePos, resistanceTextBoxes[i]) || (
+                            selectTextBox(mousePos, attractionTextBoxes[i][0]) ||
+                            selectTextBox(mousePos, attractionTextBoxes[i][1]) ||
+                            selectTextBox(mousePos, attractionTextBoxes[i][2]) );
+        }
+        if (!selected && activeTextBoxPtr != nullptr)
             activeTextBoxPtr->active = false,
             activeTextBoxPtr->setText(),
             activeTextBoxPtr = nullptr;
+    }
 }
 
 void UserInterface::render()
@@ -67,6 +79,12 @@ void UserInterface::render()
     DrawRectangleRec(sideBarBounds, LIGHTGRAY);
     gridBoolCheckBox.render();
     stepTextBox.render();
+    innerRadiusSet.render();
+    resistanceSet.render();
+    // for (int i = 0; i < 3; i++) {
+    //     innerRadiusTextBoxes[i].render();
+    //     resistanceTextBoxes[i].render();
+    // }
 }
 
 bool UserInterface::selectTextBox(Vector2 mousePos, TextBox& textBox)
@@ -137,4 +155,25 @@ void UserInterface::FloatTextBox::setText()
 void UserInterface::FloatTextBox::submit()
 {
     if (isValid()) *valuePtr = std::atof(text);
+}
+
+
+
+void UserInterface::FloatTextBoxSet::init(const char labelText[BUFFER_LENGTH], FloatTextBox floatTextBoxes[3])
+{
+    this->floatTextBoxes = floatTextBoxes;
+    label.init(
+        labelText, {
+            floatTextBoxes[0].bounds.x + (floatTextBoxes[2].bounds.x, - floatTextBoxes[0].bounds.x) / 2,
+            floatTextBoxes[0].bounds.y - floatTextBoxes[0].bounds.height,
+            floatTextBoxes[2].bounds.x + floatTextBoxes[2].bounds.width,
+            floatTextBoxes[0].bounds.height
+        }
+    );
+}
+
+void UserInterface::FloatTextBoxSet::render()
+{
+    GuiDrawText(label.text, label.bounds, TEXT_ALIGN_CENTER, DARKGRAY);
+    for (int i = 0; i < 3; i++) floatTextBoxes[i].render();
 }
