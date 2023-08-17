@@ -12,7 +12,7 @@
 
 int windowWidth;
 int windowHeight;
-int frameRate;
+int fpsLimit;
 
 int count;
 int size;
@@ -54,6 +54,9 @@ void update()
         camera.target = Vector2Add(camera.target, scaledInvMouseDelta);
     }
 
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+        std::cout << mouseWindowPosition.x << ", " << mouseWindowPosition.y << std::endl;
+
     // handle camera zoom on scroll
     if (mouseWheelMovement != 0) {
         camera.target = GetScreenToWorld2D(camera.offset, camera);
@@ -85,18 +88,18 @@ void init()
     // window
     windowWidth = 1600;
     windowHeight = 800;
-    frameRate = 60;
+    fpsLimit = 0;
     InitWindow(windowWidth, windowHeight, "Particle Life");
-    SetTargetFPS(frameRate);
+    SetTargetFPS(fpsLimit);
 
     // simulation
     count = 1024;
-    size = 16;
+    size = 12;
     particleLife.init(count, size);
 
     // camera
     camera.offset = { windowWidth/2.0f, windowHeight/2.0f };
-    camera.target = { 0, 0 };
+    camera.target = { (float)(size), (float)(size) };
     camera.rotation = 0.0f;
     camera.zoom = 20.0f;
 }

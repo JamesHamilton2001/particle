@@ -25,13 +25,19 @@ void ParticleLife::init(int count, int size)
     // settings
     this->count = count;
     bounds = 2.0f * size;
-    step = 0.005f;
-    colours[0] = RED;   innerRadii[0] = 0.25f;  resistances[0] = 0.01f * innerRadii[0];
-    colours[1] = GREEN; innerRadii[1] = 0.50f;  resistances[1] = 0.01f * innerRadii[1];
-    colours[2] = BLUE;  innerRadii[2] = 0.75f;  resistances[2] = 0.01f * innerRadii[2];
-    attractions[0][0] = -0.25f;  attractions[0][1] =  0.50f;  attractions[0][2] =  0.75f;
-    attractions[1][0] =  0.75f;  attractions[1][1] = -0.25f;  attractions[1][2] =  0.50f;
-    attractions[2][0] =  0.50f;  attractions[2][1] =  0.75f;  attractions[2][2] =  0.25f;
+    step = 0.0005f;
+    colours[0] = RED;
+    colours[1] = GREEN;
+    colours[2] = BLUE;
+    innerRadii[0] = 0.25f;
+    innerRadii[1] = 0.50f;
+    innerRadii[2] = 0.75f;
+    resistances[0] = 0.002f * innerRadii[0];
+    resistances[1] = 0.002f * innerRadii[1];
+    resistances[2] = 0.002f * innerRadii[2];
+    attractions[0][0] = -0.05f;  attractions[0][1] =  0.05f;  attractions[0][2] =  0.10f;
+    attractions[1][0] =  0.10f;  attractions[1][1] = -0.05f;  attractions[1][2] =  0.05f;
+    attractions[2][0] =  0.05f;  attractions[2][1] =  0.10f;  attractions[2][2] = -0.05f;
     
     // particle data
     types = new int[count];
@@ -70,12 +76,12 @@ void ParticleLife::update()
             float distance = sqrtf(xDist*xDist + yDist*yDist);
 
             // if other particle within acting range
-            if (distance <= 1.0f) {
+            if (distance <= 2.0f) {
 
                 // get repulsions or attraction force from inner and outer radius cross over
                 float reactionCoef = (distance <= innerRadius)
-                    ? 1.0f - distance / innerRadius
-                    : attractions[type][types[j]] * (distance - innerRadius);
+                    ? 1.0f - innerRadius / distance
+                    : attractions[type][types[j]] * (2.0f - distance);
                 
                 // apply normalised force new velocities
                 float xForce = reactionCoef * xDist / distance;
