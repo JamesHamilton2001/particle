@@ -1,6 +1,5 @@
 
 #include "ParticleLife.h"
-#include "UserInterface.h"
 
 #include <raylib.h>
 #include <rlgl.h>
@@ -8,8 +7,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <regex>
-
-#include "raygui.h"
 
 
 
@@ -22,7 +19,6 @@ int size;
 int bound;
 
 Camera2D camera;
-UserInterface userInterface;
 ParticleLife particleLife;
 
 Vector2 mouseWindowPosition;
@@ -53,9 +49,6 @@ void update()
     mouseWorldPosition = GetScreenToWorld2D(mouseWindowPosition, camera);
     mouseWheelMovement = GetMouseWheelMove();
 
-    // update ui
-    userInterface.update(mouseWindowPosition);
-
     // handle camera pan on right click + drag
     if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
         Vector2 scaledInvMouseDelta = Vector2Scale(GetMouseDelta(), -1.0f / camera.zoom);
@@ -78,13 +71,12 @@ void render()
     BeginDrawing();
         ClearBackground(BLACK);
         BeginMode2D(camera);
-            if (userInterface.gridOn())
+            if (true)
                 for (int i = -bound; i <= bound; i++)
                     DrawLine(2.0f*i, 2.0f*-bound, 2.0f*i, 2.0f*bound, DARKGRAY),
                     DrawLine(2.0f*-bound, 2.0f*i, 2.0f*bound, 2.0f*i, DARKGRAY);
             particleLife.draw();
         EndMode2D();
-        userInterface.render();
         DrawFPS(windowWidth - 80, 5);
     EndDrawing();
 }
@@ -109,15 +101,4 @@ void init()
     camera.target = { 0, 0 };
     camera.rotation = 0.0f;
     camera.zoom = 20.0f;
-
-    // user interface
-    userInterface.init(
-        windowWidth,
-        windowHeight,
-        &particleLife.step,
-        particleLife.innerRadii,
-        particleLife.resistances,
-        particleLife.attractions,
-        particleLife.colours
-    );
 }
