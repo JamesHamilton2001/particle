@@ -17,7 +17,7 @@ ParticleLife::~ParticleLife()
     delete [] types;
     delete [] positions;
     delete [] newVelocities;
-
+    UnloadTexture(circleTexture);
 }
 
 void ParticleLife::init(int count, int size)
@@ -53,6 +53,12 @@ void ParticleLife::init(int count, int size)
         newVelocities[i].x = -cosf(angle);
         newVelocities[i].y = sinf(angle);
     }
+
+    // circle texture setup
+    Image image = GenImageColor(64, 64, BLANK);
+    ImageDrawCircle(&image, 32, 32, 32, WHITE);
+    circleTexture = LoadTextureFromImage(image);
+    UnloadImage(image);
 }
 
 void ParticleLife::update()
@@ -129,30 +135,22 @@ void ParticleLife::update()
 
 void ParticleLife::draw()
 {
-    // cache variables
-    float radius = 0.1f;
+    for (int i = 0; i < count; i++) {
 
-    rlBegin(RL_TRIANGLES);
+        // cache variables
+        int type = types[i];
+        float x = positions[i].x;
+        float y = positions[i].y;
+        Color colour = colours[type];
 
-        // for each particle
-        for (int i = 0; i < count; i++) {
-
-            // cache variables
-            int type = types[i];
-            float x = positions[i].x;
-            float y = positions[i].y;
-            Color colour = colours[type];
-
-            // draw fading circle size of particles influence
-            for (int j = 0; j < 360; j += 36) {
-                rlColor4ub(colour.r, colour.g, colour.b, 255);
-                rlVertex2f(x, y);
-                rlColor4ub(colour.r, colour.g, colour.b, 0);
-                rlVertex2f(x + sinf(DEG2RAD*j) * radius, y + cosf(DEG2RAD*j) * radius);
-                rlColor4ub(colour.r, colour.g, colour.b, 0);
-                rlVertex2f(x + sinf(DEG2RAD*(j+36)) * radius, y + cosf(DEG2RAD*(j+36)) * radius);
-            }
-        }
-
-    rlEnd();
+        // draw circle texture at position
+        DrawTexturePro(
+            circleTexture,
+            { 0, 0, 64, 64 },
+            { x-0.1f, y-0.1f, 0.2, 0.2 },
+            Vector2Zero(),
+            0.0f,
+            colour
+        );
+    }
 }

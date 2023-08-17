@@ -102,4 +102,5 @@ void init()
     camera.target = { (float)(size), (float)(size) };
     camera.rotation = 0.0f;
     camera.zoom = 20.0f;
+
 }
