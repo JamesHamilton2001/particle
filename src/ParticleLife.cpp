@@ -138,19 +138,36 @@ void ParticleLife::draw()
     for (int i = 0; i < count; i++) {
 
         // cache variables
-        int type = types[i];
         float x = positions[i].x;
         float y = positions[i].y;
-        Color colour = colours[type];
+        Color colour = colours[types[i]];
 
-        // draw circle texture at position
-        DrawTexturePro(
-            circleTexture,
-            { 0, 0, 64, 64 },
-            { x-0.1f, y-0.1f, 0.2, 0.2 },
-            Vector2Zero(),
-            0.0f,
-            colour
-        );
+        // set circle texture to be rendered to a quad
+        rlSetTexture(circleTexture.id);
+        rlBegin(RL_QUADS);
+
+            // set colour and normal towards viewer
+            rlColor4ub(colour.r, colour.g, colour.b, 255);
+            rlNormal3f(0.0f, 0.0f, 1.0f);
+
+            // top left 
+            rlTexCoord2f(0.0f, 0.0f);
+            rlVertex2f(x-0.05f, y-0.05f);
+
+            // bottom left
+            rlTexCoord2f(0, 1.0f);
+            rlVertex2f(x-0.05f, y+0.05f);
+
+            // bottom right
+            rlTexCoord2f(1.0f, 1.0f);
+            rlVertex2f(x+0.05f, y+0.05f);
+
+            // top right
+            rlTexCoord2f(1.0f, 0.0f);
+            rlVertex2f(x+0.05f, y-0.05f);
+        
+        rlEnd();
+        rlSetTexture(0);
+
     }
 }
