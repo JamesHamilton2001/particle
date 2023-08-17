@@ -36,7 +36,8 @@ private:
 
     int* types;
     Vector2* positions;
-    Vector2* oldVelocities;
     Vector2* newVelocities;
-
+    
 };
+
+
