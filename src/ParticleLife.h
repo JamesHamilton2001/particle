@@ -32,7 +32,7 @@ public:
 private:
 
     int count;
-    Vector2 bounds;
+    float bounds;
 
     int* types;
     Vector2* positions;

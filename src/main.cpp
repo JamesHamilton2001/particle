@@ -16,7 +16,6 @@ int frameRate;
 
 int count;
 int size;
-int bound;
 
 Camera2D camera;
 ParticleLife particleLife;
@@ -72,9 +71,9 @@ void render()
         ClearBackground(BLACK);
         BeginMode2D(camera);
             if (true)
-                for (int i = -bound; i <= bound; i++)
-                    DrawLine(2.0f*i, 2.0f*-bound, 2.0f*i, 2.0f*bound, DARKGRAY),
-                    DrawLine(2.0f*-bound, 2.0f*i, 2.0f*bound, 2.0f*i, DARKGRAY);
+                for (int i = 0; i <= size; i++)
+                    DrawLine(2.0f * i, 0, 2.0f * i, 2.0f * size, DARKGRAY),
+                    DrawLine(0, 2.0f * i, 2.0f * size, 2.0f * i, DARKGRAY);
             particleLife.draw();
         EndMode2D();
         DrawFPS(windowWidth - 80, 5);
@@ -93,7 +92,6 @@ void init()
     // simulation
     count = 1024;
     size = 16;
-    bound = size/2;
     particleLife.init(count, size);
 
     // camera

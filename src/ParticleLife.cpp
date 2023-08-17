@@ -24,7 +24,7 @@ void ParticleLife::init(int count, int size)
 {
     // settings
     this->count = count;
-    bounds = { (float)(size), (float)(size) };
+    bounds = 2.0f * size;
     step = 0.005f;
     colours[0] = RED;   innerRadii[0] = 0.25f;  resistances[0] = 0.01f * innerRadii[0];
     colours[1] = GREEN; innerRadii[1] = 0.50f;  resistances[1] = 0.01f * innerRadii[1];
@@ -43,8 +43,8 @@ void ParticleLife::init(int count, int size)
     for (int i = 0; i < count; i++) {
         float angle = (float) (GetRandomValue(0, 360));
         types[i] = GetRandomValue(0, 2);
-        positions[i].x = GetRandomValue(-bounds.x * 100, bounds.x * 100) / 100.0f;
-        positions[i].y = GetRandomValue(-bounds.x * 100, bounds.x * 100) / 100.0f;
+        positions[i].x = GetRandomValue(0, bounds * 100) / 100.0f;
+        positions[i].y = GetRandomValue(0, bounds * 100) / 100.0f;
         oldVelocities[i].x = -cosf(angle);
         oldVelocities[i].y = sinf(angle);
         newVelocities[i] = oldVelocities[i];
@@ -100,9 +100,11 @@ void ParticleLife::update()
         positions[i].y += step * newVelocities[i].y;
 
         // bounce if bounds reached
-        if (abs(positions[i].x) > bounds.x) newVelocities[i].x *= -1.0f;
-        if (abs(positions[i].y) > bounds.y) newVelocities[i].y *= -1.0f;
-        
+        if (positions[i].x < 0 || positions[i].x > bounds)
+            newVelocities[i].x *= -1.0f;
+        if (positions[i].y < 0 || positions[i].y > bounds)
+            newVelocities[i].y *= -1.0f;
+
         // set velocities for next step
         oldVelocities[i].x = newVelocities[i].x;
         oldVelocities[i].y = newVelocities[i].y;
