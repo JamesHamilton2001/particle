@@ -93,8 +93,8 @@ void init()
     SetTargetFPS(fpsLimit);
 
     // simulation
-    count = 1024;
-    size = 12;
+    count = 2048;
+    size = 16;
     particleLife.init(count, size);
 
     // camera

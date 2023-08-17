@@ -166,6 +166,7 @@ void ParticleLife::draw()
             rlTexCoord2f(1.0f, 0.0f);
             rlVertex2f(x+0.05f, y-0.05f);
         
+        // end quad mode and reset texture id
         rlEnd();
         rlSetTexture(0);
 
