@@ -18,6 +18,8 @@ class Canvas
     void update(Camera2D& camera);
     void draw();
 
+    bool drawGrid;
+
  private:
 
     int particleCount;
@@ -26,7 +28,5 @@ class Canvas
     Vector2* particlePositions;
     Color* particleColours;
     Texture2D particleTexture;
-
-    bool drawGrid;
     
 };

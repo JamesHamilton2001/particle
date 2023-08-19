@@ -1,11 +1,14 @@
 #include "ParticleLife.h"
 #include "Canvas.h"
+#include "Gui.h"
 
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
 #include <iostream>
 #include <cstdlib>
+
+#include "raygui.h"
 
 
 
@@ -19,10 +22,7 @@ int size;
 ParticleLife particleLife;
 Camera2D camera;
 Canvas canvas;
-
-Vector2 mouseWindowPosition;
-Vector2 mouseWorldPosition;
-float mouseWheelMovement;
+Gui gui;
 
 
 void init();
@@ -56,6 +56,7 @@ void render()
         BeginMode2D(camera);
             canvas.draw();
         EndMode2D();
+        gui.updateRender();
         DrawFPS(windowWidth - 80, 5);
     EndDrawing();
 }
@@ -82,5 +83,6 @@ void init()
 
     // canvas
     canvas.init(particleLife);
+    gui.init(particleLife, canvas);
 
 }
