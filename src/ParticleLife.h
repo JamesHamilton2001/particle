@@ -21,7 +21,6 @@ public:
 
     void init(int count, int size);
     void update();
-    void draw();
 
     int count;
     int size;

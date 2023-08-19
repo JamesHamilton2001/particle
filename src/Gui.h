@@ -27,24 +27,22 @@ class Gui
     static const unsigned int LABEL_BUF_LEN = 16U;
     static const unsigned int FLOAT_BUF_LEN = 16U;
 
-    struct Label {
-        Rectangle bounds;
-        char text[LABEL_BUF_LEN];
-        GuiTextAlignment alignment;
-    };
-    struct Element {
-        Rectangle bounds;
-    };
+    struct Label { Rectangle bounds; char text[LABEL_BUF_LEN]; GuiTextAlignment alignment; };
+    struct Element { Rectangle bounds; };
     
-    struct CheckBox : Element {
-        bool* valuePtr;
-    };
+    struct CheckBox : Element { bool* valuePtr; };
+    struct FloatBox : Element { float* valuePtr; int min; int max; bool editMode; };
 
     Label gridLabel;
     CheckBox gridCheckBox;
 
+    Label stepLabel;
+    FloatBox stepFloatBox;
+
     Label elementLabel(Rectangle bounds, const char labelText[LABEL_BUF_LEN], GuiTextAlignment alignment);
 
-    void handleLable(Label& label);
+    void handleLabel(Label& label);
     void handleCheckBox(CheckBox& checkBox);
+    void handleFloatBox(FloatBox& floatBox);
+
 };
