@@ -9,7 +9,7 @@
 #include "raygui.h"
 
 // NOTE: float box is taken and customised from custom input box example
-// changes made: handle 8 decimal places, added left padding
+// changes made: handle 8 decimal places
 
 
 
@@ -20,57 +20,88 @@ int GuiFloatBox(Rectangle bounds, const char* text, float* value, int minValue, 
 
 
 
-Gui::Gui()
-{
+Gui::Gui() {}
 
-}
-
-Gui::~Gui()
-{
-
-}
+Gui::~Gui() {}
 
 void Gui::init(ParticleLife &particleLife, Canvas &canvas)
 {
     // int windowWidth = GetScreenWidth();
     float windowHeight = GetScreenHeight();
-    Rectangle bounds;
+    Vector2 position;
 
     // grid check box
-    bounds = { 100, windowHeight - 250, 20, 20 };
-    gridCheckBox.bounds = bounds;
-    gridCheckBox.valuePtr = &canvas.drawGrid;
-    gridLabel = elementLabel(bounds, "DrawGrid", TEXT_ALIGN_RIGHT);
+    position = { 100, windowHeight - 200 };
+    initLabel(gridLabel, position, "Grid");
+    initCheckBox(gridCheckBox, position, &canvas.drawGrid);
 
     // step float box
-    bounds.y += 30; bounds.width = 100;
-    stepFloatBox.bounds = bounds;
-    stepFloatBox.valuePtr = &particleLife.step;
-    stepFloatBox.min = 0;
-    stepFloatBox.max = 1;
-    stepFloatBox.editMode = false;
-    stepLabel = elementLabel(bounds, "Step", TEXT_ALIGN_RIGHT);
+    position.y += 30;
+    initLabel(stepLabel, position, "Step");
+    initFloatBox(stepFloatBox, position, &particleLife.step, 0, 1);
+
+    // inner radii float set
+    position.y += 30;
+    initLabel(innerRadiiLabel, position, "Inner Radii");
+    initFloatSet(innerRadiiFloatSet, position, particleLife.innerRadii, 0, 1);
+
+    // attraction float matrix
+    position.y += 30;
+    initLabel(attractionsLabel, position, "Attractions");
+    initFloatMat(attractionsMat, position, particleLife.attractions, -1, 1);
 }
 
 void Gui::updateRender()
 {
     handleLabel(gridLabel);
-    handleCheckBox(gridCheckBox);
-
     handleLabel(stepLabel);
+    handleLabel(innerRadiiLabel);
+    handleLabel(attractionsLabel);
+
+    handleCheckBox(gridCheckBox);
     handleFloatBox(stepFloatBox);
+    handleFloatSet(innerRadiiFloatSet);
+    handleFloatMat(attractionsMat);
 }
 
-Gui::Label Gui::elementLabel(Rectangle elementBounds, const char labelText[LABEL_BUF_LEN], GuiTextAlignment alignment)
+void Gui::initLabel(Label& label, Vector2 position, const char* labelText)
 {
-    Label label = { { elementBounds.x - 70, elementBounds.y, 60, 20 }, "", alignment };
+    label.bounds = { position.x - 70, position.y, 60, 20 };
     std::strcpy(label.text, labelText);
-    return label;
+}
+
+void Gui::initCheckBox(CheckBox& checkBox, Vector2 position, bool* valuePtr)
+{
+    checkBox.bounds = { position.x, position.y, 20, 20 };
+    checkBox.valuePtr = valuePtr;
+}
+
+void Gui::initFloatBox(FloatBox& floatBox, Vector2 position, float* valuePtr, int min, int max)
+{
+    floatBox.bounds = { position.x, position.y, 80, 20 };
+    floatBox.valuePtr = valuePtr;
+    floatBox.min = min;
+    floatBox.max = max;
+    floatBox.editMode = false;
+}
+
+void Gui::initFloatSet(FloatSet& floatSet, Vector2 position, float valueSet[3], int min, int max)
+{
+    initFloatBox(floatSet.floatBox1, position, &valueSet[0], min, max); position.x += 85;
+    initFloatBox(floatSet.floatBox2, position, &valueSet[1], min, max); position.x += 85;
+    initFloatBox(floatSet.floatBox3, position, &valueSet[2], min, max);
+}
+
+void Gui::initFloatMat(FloatMat& floatMat, Vector2 position, float valueMat[3][3], int min, int max)
+{
+    initFloatSet(floatMat.floatSet1, position, valueMat[0], min, max); position.y += 25;
+    initFloatSet(floatMat.floatSet2, position, valueMat[1], min, max); position.y += 25;
+    initFloatSet(floatMat.floatSet3, position, valueMat[2], min, max);
 }
 
 void Gui::handleLabel(Label& label)
 {
-    GuiDrawText(label.text, label.bounds, label.alignment, WHITE);
+    GuiDrawText(label.text, label.bounds, TEXT_ALIGN_RIGHT, WHITE);
 }
 
 void Gui::handleCheckBox(CheckBox& checkBox)
@@ -84,6 +115,19 @@ void Gui::handleFloatBox(FloatBox& floatBox)
         floatBox.editMode = !floatBox.editMode;
 }
 
+void Gui::handleFloatSet(FloatSet& floatSet)
+{
+    handleFloatBox(floatSet.floatBox1);
+    handleFloatBox(floatSet.floatBox2);
+    handleFloatBox(floatSet.floatBox3);
+}
+
+void Gui::handleFloatMat(FloatMat& floatMat)
+{
+    handleFloatSet(floatMat.floatSet1);
+    handleFloatSet(floatMat.floatSet2);
+    handleFloatSet(floatMat.floatSet3);
+}
 
 
 
@@ -91,6 +135,7 @@ void Gui::handleFloatBox(FloatBox& floatBox)
 
 
 
+// "borrowed" code from here onwards
 
 // Get float value from text
 float TextToFloat(const char* text)
