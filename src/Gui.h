@@ -30,18 +30,21 @@ class Gui
     struct Label {
         Rectangle bounds;
         char text[LABEL_BUF_LEN];
+        GuiTextAlignment alignment;
     };
     struct Element {
         Rectangle bounds;
-        Label label;
     };
     
     struct CheckBox : Element {
         bool* valuePtr;
     };
 
+    Label gridLabel;
     CheckBox gridCheckBox;
 
-    Label elementLabel(Rectangle bounds, const char labelText[LABEL_BUF_LEN]);
+    Label elementLabel(Rectangle bounds, const char labelText[LABEL_BUF_LEN], GuiTextAlignment alignment);
 
+    void handleLable(Label& label);
+    void handleCheckBox(CheckBox& checkBox);
 };
