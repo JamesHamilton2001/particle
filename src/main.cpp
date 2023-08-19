@@ -1,12 +1,11 @@
-
 #include "ParticleLife.h"
+#include "Canvas.h"
 
 #include <raylib.h>
-#include <rlgl.h>
 #include <raymath.h>
+#include <rlgl.h>
 #include <iostream>
 #include <cstdlib>
-#include <regex>
 
 
 
@@ -17,8 +16,9 @@ int fpsLimit;
 int count;
 int size;
 
-Camera2D camera;
 ParticleLife particleLife;
+Camera2D camera;
+Canvas canvas;
 
 Vector2 mouseWindowPosition;
 Vector2 mouseWorldPosition;
@@ -30,12 +30,14 @@ void update();
 void render();
 
 
+
 int main()
 {
     init();
 
     while (!WindowShouldClose())
-        update(), render();
+        update(),
+        render();
 
     CloseWindow();
     return EXIT_SUCCESS;
@@ -43,28 +45,7 @@ int main()
 
 void update()
 {
-    // get mouse input
-    mouseWindowPosition = GetMousePosition();
-    mouseWorldPosition = GetScreenToWorld2D(mouseWindowPosition, camera);
-    mouseWheelMovement = GetMouseWheelMove();
-
-    // handle camera pan on right click + drag
-    if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-        Vector2 scaledInvMouseDelta = Vector2Scale(GetMouseDelta(), -1.0f / camera.zoom);
-        camera.target = Vector2Add(camera.target, scaledInvMouseDelta);
-    }
-
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-        std::cout << mouseWindowPosition.x << ", " << mouseWindowPosition.y << std::endl;
-
-    // handle camera zoom on scroll
-    if (mouseWheelMovement != 0) {
-        camera.target = GetScreenToWorld2D(camera.offset, camera);
-        camera.zoom += (mouseWheelMovement * 2.0f);
-        if (camera.zoom < 2.0f) camera.zoom = 2.0f;
-    }
-
-    // step over simulation
+    canvas.update(camera);
     particleLife.update();
 }
 
@@ -73,11 +54,7 @@ void render()
     BeginDrawing();
         ClearBackground(BLACK);
         BeginMode2D(camera);
-            if (true)
-                for (int i = 0; i <= size; i++)
-                    DrawLine(2.0f * i, 0, 2.0f * i, 2.0f * size, DARKGRAY),
-                    DrawLine(0, 2.0f * i, 2.0f * size, 2.0f * i, DARKGRAY);
-            particleLife.draw();
+            canvas.draw();
         EndMode2D();
         DrawFPS(windowWidth - 80, 5);
     EndDrawing();
@@ -93,7 +70,7 @@ void init()
     SetTargetFPS(fpsLimit);
 
     // simulation
-    count = 2048;
+    count = 1536;
     size = 12;
     particleLife.init(count, size);
 
@@ -102,5 +79,8 @@ void init()
     camera.target = { (float)(size), (float)(size) };
     camera.rotation = 0.0f;
     camera.zoom = 20.0f;
+
+    // canvas
+    canvas.init(particleLife);
 
 }

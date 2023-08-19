@@ -17,13 +17,13 @@ ParticleLife::~ParticleLife()
     delete [] types;
     delete [] positions;
     delete [] newVelocities;
-    UnloadTexture(circleTexture);
 }
 
 void ParticleLife::init(int count, int size)
 {
     // settings
     this->count = count;
+    this->size = size;
     bounds = 2.0f * size;
     step = 0.00005f;
     colours[0] = RED;
@@ -53,12 +53,6 @@ void ParticleLife::init(int count, int size)
         newVelocities[i].x = -cosf(angle);
         newVelocities[i].y = sinf(angle);
     }
-
-    // circle texture setup
-    Image image = GenImageColor(64, 64, BLANK);
-    ImageDrawCircle(&image, 32, 32, 32, WHITE);
-    circleTexture = LoadTextureFromImage(image);
-    UnloadImage(image);
 }
 
 void ParticleLife::update()
@@ -82,6 +76,7 @@ void ParticleLife::update()
             float xDist = positions[j].x - xPos;
             float yDist = positions[j].y - yPos;
             float sqDist = xDist*xDist + yDist*yDist;
+            float* attractionArray = attractions[type];
 
             // if other particle within acting range
             if (sqDist <= 4.0f) {
@@ -90,7 +85,7 @@ void ParticleLife::update()
                 // get repulsions or attraction force from inner and outer radius cross over
                 float reactionCoef = (distance <= innerRadius)
                     ? 1.0f - innerRadius / distance
-                    : attractions[type][types[j]] * (2.0f - distance);
+                    : attractionArray[types[j]] * (2.0f - distance);
                 
                 // apply normalised force to other particle
                 float xForce = reactionCoef * xDist / distance;
@@ -130,45 +125,5 @@ void ParticleLife::update()
         // apply calculated velocity
         newVelocities[i].x = xVelocity;
         newVelocities[i].y = yVelocity;
-    }
-}
-
-void ParticleLife::draw()
-{
-    for (int i = 0; i < count; i++) {
-
-        // cache variables
-        float x = positions[i].x;
-        float y = positions[i].y;
-        Color colour = colours[types[i]];
-
-        // set circle texture to be rendered to a quad
-        rlSetTexture(circleTexture.id);
-        rlBegin(RL_QUADS);
-
-            // set colour and normal towards viewer
-            rlColor4ub(colour.r, colour.g, colour.b, 255);
-            rlNormal3f(0.0f, 0.0f, 1.0f);
-
-            // top left 
-            rlTexCoord2f(0.0f, 0.0f);
-            rlVertex2f(x-0.05f, y-0.05f);
-
-            // bottom left
-            rlTexCoord2f(0, 1.0f);
-            rlVertex2f(x-0.05f, y+0.05f);
-
-            // bottom right
-            rlTexCoord2f(1.0f, 1.0f);
-            rlVertex2f(x+0.05f, y+0.05f);
-
-            // top right
-            rlTexCoord2f(1.0f, 0.0f);
-            rlVertex2f(x+0.05f, y-0.05f);
-        
-        // end quad mode and reset texture id
-        rlEnd();
-        rlSetTexture(0);
-
     }
 }
