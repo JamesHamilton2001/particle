@@ -31,7 +31,7 @@ void Gui::init(ParticleLife &particleLife, Canvas &canvas)
     Vector2 position;
 
     // grid check box
-    position = { 100, windowHeight - 200 };
+    position = { 100, windowHeight - 225 };
     initLabel(gridLabel, position, "Grid");
     initCheckBox(gridCheckBox, position, &canvas.drawGrid);
 
@@ -39,6 +39,11 @@ void Gui::init(ParticleLife &particleLife, Canvas &canvas)
     position.y += 30;
     initLabel(stepLabel, position, "Step");
     initFloatBox(stepFloatBox, position, &particleLife.step, 0, 1);
+
+    // resistance float box
+    position.y += 30;
+    initLabel(resistanceLabel, position, "Resistance");
+    initFloatBox(resistanceFloatBox, position, &particleLife.resistance, 0, 1);
 
     // inner radii float set
     position.y += 30;
@@ -55,11 +60,13 @@ void Gui::updateRender()
 {
     handleLabel(gridLabel);
     handleLabel(stepLabel);
+    handleLabel(resistanceLabel);
     handleLabel(innerRadiiLabel);
     handleLabel(attractionsLabel);
 
     handleCheckBox(gridCheckBox);
     handleFloatBox(stepFloatBox);
+    handleFloatBox(resistanceFloatBox);
     handleFloatSet(innerRadiiFloatSet);
     handleFloatMat(attractionsMat);
 }

@@ -31,8 +31,9 @@ public:
     Vector2* newVelocities;
 
     float step;
+    float resistance;
     float innerRadii[3];
-    float resistances[3];
+    // float resistances[3];
     float attractions[3][3];
     Color colours[3];
 

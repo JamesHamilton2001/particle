@@ -37,11 +37,13 @@ class Gui
 
     Label gridLabel;
     Label stepLabel;
+    Label resistanceLabel;
     Label innerRadiiLabel;
     Label attractionsLabel;
 
     CheckBox gridCheckBox;
     FloatBox stepFloatBox;
+    FloatBox resistanceFloatBox;
     FloatSet innerRadiiFloatSet;
     FloatMat attractionsMat;
 

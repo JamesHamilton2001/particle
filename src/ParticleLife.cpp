@@ -32,9 +32,7 @@ void ParticleLife::init(int count, int size)
     innerRadii[0] = 0.25f;
     innerRadii[1] = 0.50f;
     innerRadii[2] = 0.75f;
-    resistances[0] = 0.0022f * innerRadii[0];
-    resistances[1] = 0.0022f * innerRadii[1];
-    resistances[2] = 0.0022f * innerRadii[2];
+    resistance = 0.0022f;
     attractions[0][0] = -0.05f;  attractions[0][1] =  0.05f;  attractions[0][2] =  0.10f;
     attractions[1][0] =  0.10f;  attractions[1][1] = -0.05f;  attractions[1][2] =  0.05f;
     attractions[2][0] =  0.05f;  attractions[2][1] =  0.10f;  attractions[2][2] = -0.05f;
@@ -57,6 +55,13 @@ void ParticleLife::init(int count, int size)
 
 void ParticleLife::update()
 {
+    // cache resistance values
+    float resistances[3] = {
+        resistance*innerRadii[0],
+        resistance*innerRadii[1],
+        resistance*innerRadii[2]
+    };
+
     // for each particle
     for (int i = 0; i < count; i++) {
 
