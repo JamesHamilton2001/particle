@@ -20,7 +20,7 @@ class Gui
     ~Gui();
 
     void init(ParticleLife& particleLife, Canvas& canvas);
-    void updateRender();
+    void updateRender(ParticleLife& particleLife, Canvas& canvas);
 
  private:
 
@@ -30,10 +30,12 @@ class Gui
     struct Label   { Rectangle bounds; char text[LABEL_BUF_LEN]; };
     struct Element { Rectangle bounds; };
     
-    struct CheckBox : Element { bool* valuePtr; };
-    struct FloatBox : Element { float* valuePtr; int min; int max; bool editMode; };
-    struct FloatSet { FloatBox floatBox1, floatBox2, floatBox3; };
-    struct FloatMat { FloatSet floatSet1, floatSet2, floatSet3; };
+    typedef void (ParticleLife::*ButtonFunc)();
+    struct Button   : Label     { ButtonFunc func; };
+    struct CheckBox : Element   { bool* valuePtr; };
+    struct FloatBox : Element   { float* valuePtr; int min; int max; bool editMode; };
+    struct FloatSet             { FloatBox floatBox1, floatBox2, floatBox3; };
+    struct FloatMat             { FloatSet floatSet1, floatSet2, floatSet3; };
 
     Label gridLabel;
     Label stepLabel;
@@ -41,19 +43,22 @@ class Gui
     Label innerRadiiLabel;
     Label attractionsLabel;
 
+    Button randomiseButton;
     CheckBox gridCheckBox;
     FloatBox stepFloatBox;
     FloatBox resistanceFloatBox;
     FloatSet innerRadiiFloatSet;
     FloatMat attractionsMat;
 
-    void initLabel(Label& label, Vector2 position, const char* labelText);
+    void initLabel(Label& label, Vector2 position, const char* text);
+    void initButton(Button& button, Vector2 position, const char* text, ButtonFunc func);
     void initCheckBox(CheckBox& checkBox, Vector2 position, bool* valuePtr);
     void initFloatBox(FloatBox& floatBox, Vector2 position, float* valuePtr, int min, int max);
     void initFloatSet(FloatSet& floatSet, Vector2 position, float valueSet[3], int min, int max);
     void initFloatMat(FloatMat& floatMat, Vector2 position, float valueMat[3][3], int min, int max);
 
     void handleLabel(Label& label);
+    void handleButton(Button& button, ParticleLife& particleLife);
     void handleCheckBox(CheckBox& checkBox);
     void handleFloatBox(FloatBox& floatBox);
     void handleFloatSet(FloatSet& floatSet);

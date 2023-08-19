@@ -21,6 +21,7 @@ public:
 
     void init(int count, int size);
     void update();
+    void randomise();
 
     int count;
     int size;
@@ -33,7 +34,6 @@ public:
     float step;
     float resistance;
     float innerRadii[3];
-    // float resistances[3];
     float attractions[3][3];
     Color colours[3];
 

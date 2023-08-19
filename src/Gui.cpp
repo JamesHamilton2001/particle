@@ -30,8 +30,12 @@ void Gui::init(ParticleLife &particleLife, Canvas &canvas)
     float windowHeight = GetScreenHeight();
     Vector2 position;
 
+    // randomise button
+    position = { 100, windowHeight - 250 };
+    initButton(randomiseButton, position, "Randomise", &ParticleLife::randomise);
+
     // grid check box
-    position = { 100, windowHeight - 225 };
+    position.y += 30;
     initLabel(gridLabel, position, "Grid");
     initCheckBox(gridCheckBox, position, &canvas.drawGrid);
 
@@ -56,7 +60,7 @@ void Gui::init(ParticleLife &particleLife, Canvas &canvas)
     initFloatMat(attractionsMat, position, particleLife.attractions, -1, 1);
 }
 
-void Gui::updateRender()
+void Gui::updateRender(ParticleLife& particleLife, Canvas& canvas)
 {
     handleLabel(gridLabel);
     handleLabel(stepLabel);
@@ -64,6 +68,7 @@ void Gui::updateRender()
     handleLabel(innerRadiiLabel);
     handleLabel(attractionsLabel);
 
+    handleButton(randomiseButton, particleLife);
     handleCheckBox(gridCheckBox);
     handleFloatBox(stepFloatBox);
     handleFloatBox(resistanceFloatBox);
@@ -71,10 +76,17 @@ void Gui::updateRender()
     handleFloatMat(attractionsMat);
 }
 
-void Gui::initLabel(Label& label, Vector2 position, const char* labelText)
+void Gui::initLabel(Label& label, Vector2 position, const char* text)
 {
     label.bounds = { position.x - 70, position.y, 60, 20 };
-    std::strcpy(label.text, labelText);
+    std::strcpy(label.text, text);
+}
+
+void Gui::initButton(Button& button, Vector2 position, const char* text, ButtonFunc func)
+{
+    button.bounds = { position.x, position.y, 60, 20 };
+    std::strcpy(button.text, text);
+    button.func = func;
 }
 
 void Gui::initCheckBox(CheckBox& checkBox, Vector2 position, bool* valuePtr)
@@ -111,6 +123,12 @@ void Gui::handleLabel(Label& label)
     GuiDrawText(label.text, label.bounds, TEXT_ALIGN_RIGHT, WHITE);
 }
 
+void Gui::handleButton(Button& button, ParticleLife& particleLife)
+{
+    if (GuiButton(button.bounds, button.text))
+        (particleLife.*button.func)();
+}
+
 void Gui::handleCheckBox(CheckBox& checkBox)
 {
     GuiCheckBox(checkBox.bounds, NULL, checkBox.valuePtr);
@@ -135,7 +153,6 @@ void Gui::handleFloatMat(FloatMat& floatMat)
     handleFloatSet(floatMat.floatSet2);
     handleFloatSet(floatMat.floatSet3);
 }
-
 
 
 

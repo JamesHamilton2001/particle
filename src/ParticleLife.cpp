@@ -42,15 +42,7 @@ void ParticleLife::init(int count, int size)
     positions = new Vector2[count];
     newVelocities = new Vector2[count];
 
-    // randmouse values and map to grid
-    for (int i = 0; i < count; i++) {
-        float angle = (float) (GetRandomValue(0, 360));
-        types[i] = GetRandomValue(0, 2);
-        positions[i].x = GetRandomValue(0, bounds * 100) / 100.0f;
-        positions[i].y = GetRandomValue(0, bounds * 100) / 100.0f;
-        newVelocities[i].x = -cosf(angle);
-        newVelocities[i].y = sinf(angle);
-    }
+    randomise();
 }
 
 void ParticleLife::update()
@@ -130,5 +122,17 @@ void ParticleLife::update()
         // apply calculated velocity
         newVelocities[i].x = xVelocity;
         newVelocities[i].y = yVelocity;
+    }
+}
+
+void ParticleLife::randomise()
+{
+    for (int i = 0; i < count; i++) {
+        float angle = (float) (GetRandomValue(0, 360));
+        types[i] = GetRandomValue(0, 2);
+        positions[i].x = GetRandomValue(0, bounds * 100) / 100.0f;
+        positions[i].y = GetRandomValue(0, bounds * 100) / 100.0f;
+        newVelocities[i].x = -cosf(angle);
+        newVelocities[i].y = sinf(angle);
     }
 }

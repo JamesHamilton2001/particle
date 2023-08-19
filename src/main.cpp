@@ -56,7 +56,7 @@ void render()
         BeginMode2D(camera);
             canvas.draw();
         EndMode2D();
-        gui.updateRender();
+        gui.updateRender(particleLife, canvas);
         DrawFPS(windowWidth - 80, 5);
     EndDrawing();
 }
