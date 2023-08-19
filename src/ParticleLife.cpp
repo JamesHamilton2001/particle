@@ -25,16 +25,16 @@ void ParticleLife::init(int count, int size)
     // settings
     this->count = count;
     bounds = 2.0f * size;
-    step = 0.0005f;
+    step = 0.00005f;
     colours[0] = RED;
     colours[1] = GREEN;
     colours[2] = BLUE;
     innerRadii[0] = 0.25f;
     innerRadii[1] = 0.50f;
     innerRadii[2] = 0.75f;
-    resistances[0] = 0.002f * innerRadii[0];
-    resistances[1] = 0.002f * innerRadii[1];
-    resistances[2] = 0.002f * innerRadii[2];
+    resistances[0] = 0.0022f * innerRadii[0];
+    resistances[1] = 0.0022f * innerRadii[1];
+    resistances[2] = 0.0022f * innerRadii[2];
     attractions[0][0] = -0.05f;  attractions[0][1] =  0.05f;  attractions[0][2] =  0.10f;
     attractions[1][0] =  0.10f;  attractions[1][1] = -0.05f;  attractions[1][2] =  0.05f;
     attractions[2][0] =  0.05f;  attractions[2][1] =  0.10f;  attractions[2][2] = -0.05f;
@@ -66,7 +66,7 @@ void ParticleLife::update()
     // for each particle
     for (int i = 0; i < count; i++) {
 
-        // cache variables
+        // cached variables
         int type = types[i];
         float innerRadius = innerRadii[type];
         float xPos = positions[i].x;

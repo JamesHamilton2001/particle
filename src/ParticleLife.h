@@ -38,7 +38,7 @@ private:
     Vector2* positions;
     Vector2* newVelocities;
 
-    public: Texture2D circleTexture;
+    Texture2D circleTexture;
     
 };
 

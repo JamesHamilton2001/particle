@@ -94,7 +94,7 @@ void init()
 
     // simulation
     count = 2048;
-    size = 16;
+    size = 12;
     particleLife.init(count, size);
 
     // camera
