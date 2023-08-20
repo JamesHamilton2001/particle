@@ -30,4 +30,6 @@ class SpatialHash
     int count;
     int size;
 
+    void rowColHash(Vector2 pos, int& row, int& col);
+
 };

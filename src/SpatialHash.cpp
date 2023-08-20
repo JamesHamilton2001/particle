@@ -36,10 +36,8 @@ void SpatialHash::init(int count, int size)
 void SpatialHash::mapToGrid(int i, Vector2 pos)
 {
     Node& node = nodes[i];
-
-    // NOTE: will implement another way later
-    int row = (pos.x < size*2) ? pos.x/2.0f : size-1;
-    int col = (pos.y < size*2) ? pos.y/2.0f : size-1;
+    int row, col;
+    rowColHash(pos, row, col);
     
     // if particle has moved cells
     if (node.row != row || node.col != col) {
@@ -58,8 +56,15 @@ void SpatialHash::mapToGrid(int i, Vector2 pos)
         // set next node ptr to current row/col cells head
         node.next = grid[row][col];
 
-        // set grid[row][col] ptr to node
+        // set grid[row][col] to point to node
         grid[row][col] = &node;
 
     }
+}
+
+// NOTE: will implement another way to deal with out of bounds
+void SpatialHash::rowColHash(Vector2 pos, int& row, int& col)
+{
+    row = (pos.y < size*2) ? pos.y/2.0f : size-1;
+    col = (pos.x < size*2) ? pos.x/2.0f : size-1;
 }
