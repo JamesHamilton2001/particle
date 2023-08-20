@@ -23,7 +23,7 @@ void Canvas::init(ParticleLife& particleLife)
     this->gridSize = particleLife.size;
     this->particleTypes = particleLife.types;
     this->particlePositions = particleLife.positions;
-    this->particleVelocities = particleLife.newVelocities;
+    this->particleVelocities = particleLife.velocities;
     this->particleColours = particleLife.colours;
     drawGrid = true;
 
@@ -129,10 +129,10 @@ void Canvas::randomiseVelocities()
 
 void Canvas::randomiseTypes()
 {
-    // int dif = (GetRandomValue(0, 1)) ? 1 : -1;
-    // for (int i = 0; i < particleCount; i++)
-    //     particleTypes[i] = (i+dif) % 3;
-
+    int dif = (GetRandomValue(0, 1)) ? 1 : -1;
     for (int i = 0; i < particleCount; i++)
-        particleTypes[i] = GetRandomValue(0, 2);
+        particleTypes[i] = (i+dif) % 3;
+
+    // for (int i = 0; i < particleCount; i++)
+    //     particleTypes[i] = GetRandomValue(0, 2);
 }

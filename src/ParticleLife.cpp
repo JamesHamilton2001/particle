@@ -16,7 +16,7 @@ ParticleLife::~ParticleLife()
 {
     delete [] types;
     delete [] positions;
-    delete [] newVelocities;
+    delete [] velocities;
 }
 
 void ParticleLife::init(int count, int size)
@@ -40,27 +40,26 @@ void ParticleLife::init(int count, int size)
     // particle data
     types = new int[count];
     positions = new Vector2[count];
-    newVelocities = new Vector2[count];
+    velocities = new Vector2[count];
 
-    randomise();
+    // initial values
+    for (int i = 0; i < count; i++) {
+        types[i] = i%3;
+        velocities[i] = { 0, 0 };
+        positions[i] = { GetRandomValue(0, bounds*100) / 100.0f,
+                         GetRandomValue(0, bounds*100) / 100.0f };
+    }
 }
 
 void ParticleLife::update()
 {
-    // cached values
-    // float resistances[3] = {
-    //     resistance*innerRadii[0],
-    //     resistance*innerRadii[1],
-    //     resistance*innerRadii[2]
-    // };
+    // cached variables
     const float invResistance = 1.0f - resistance;
     const float peaks[3] = {
         2.0f * (innerRadii[0] + (1.0f-innerRadii[0])/2.0f),
         2.0f * (innerRadii[1] + (1.0f-innerRadii[1])/2.0f),
         2.0f * (innerRadii[2] + (1.0f-innerRadii[2])/2.0f)
     };
-
-
 
     // for each particle
     for (int i = 0; i < count; i++) {
@@ -97,21 +96,20 @@ void ParticleLife::update()
                 float yForce = reactionCoef * yDist / distance;
                 xVelInc += xForce;
                 yVelInc += yForce;
-                newVelocities[j].x -= xForce;
-                newVelocities[j].y -= yForce;
+                velocities[j].x -= xForce;
+                velocities[j].y -= yForce;
             }
         }
-        newVelocities[i].x += xVelInc;
-        newVelocities[i].y += yVelInc;
+        velocities[i].x += xVelInc;
+        velocities[i].y += yVelInc;
     }
 
     // for each particle
     for (int i = 0; i < count; i++) {
 
         // cache variables
-        // float resistance = 1.0f - resistances[types[i]];
-        float xVelocity = newVelocities[i].x;
-        float yVelocity = newVelocities[i].y;
+        float xVelocity = velocities[i].x;
+        float yVelocity = velocities[i].y;
 
         // apply friction
         xVelocity *= invResistance;
@@ -128,19 +126,7 @@ void ParticleLife::update()
             yVelocity *= -1.0f;
 
         // apply calculated velocity
-        newVelocities[i].x = xVelocity;
-        newVelocities[i].y = yVelocity;
-    }
-}
-
-void ParticleLife::randomise()
-{
-    for (int i = 0; i < count; i++) {
-        float angle = (float) (GetRandomValue(0, 360));
-        types[i] = GetRandomValue(0, 2);
-        positions[i].x = GetRandomValue(0, bounds * 100) / 100.0f;
-        positions[i].y = GetRandomValue(0, bounds * 100) / 100.0f;
-        newVelocities[i].x = -cosf(angle);
-        newVelocities[i].y = sinf(angle);
+        velocities[i].x = xVelocity;
+        velocities[i].y = yVelocity;
     }
 }

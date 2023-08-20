@@ -53,11 +53,14 @@ void render()
 {
     BeginDrawing();
         ClearBackground(BLACK);
+
         BeginMode2D(camera);
             canvas.draw();
         EndMode2D();
+
         gui.updateRender(particleLife, canvas);
         DrawFPS(windowWidth - 80, 5);
+
     EndDrawing();
 }
 
@@ -79,7 +82,7 @@ void init()
     camera.offset = { windowWidth/2.0f, windowHeight/2.0f };
     camera.target = { (float)(size), (float)(size) };
     camera.rotation = 0.0f;
-    camera.zoom = 20.0f;
+    camera.zoom = 25.0f;
 
     // canvas
     canvas.init(particleLife);

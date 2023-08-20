@@ -29,7 +29,7 @@ public:
 
     int* types;
     Vector2* positions;
-    Vector2* newVelocities;
+    Vector2* velocities;
 
     float step;
     float resistance;
