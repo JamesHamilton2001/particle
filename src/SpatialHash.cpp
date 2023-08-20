@@ -23,7 +23,7 @@ void SpatialHash::init(int count, int size)
 
     nodes = new Node[count];
     for (int i = 0; i < count; i++)
-        nodes[i] = { -1, -1, nullptr, nullptr };
+        nodes[i] = { i, -1, -1, nullptr, nullptr };
 
     grid = new Node**[size];
     for (int i = 0; i < size; i++) {
@@ -42,13 +42,12 @@ void SpatialHash::mapToGrid(int i, Vector2 pos)
     // if particle has moved cells
     if (node.row != row || node.col != col) {
 
-        // set row and col of node
-        node.row = row;
-        node.col = col;
-
         // set prev nodes next ptr to null
-        if (node.prev != nullptr)
-            node.prev->next = nullptr;
+        if (node.prev == nullptr) {
+            if (node.row != -1 && node.col != -1)
+                grid[node.row][node.col] = nullptr;
+        }
+        else node.prev->next = nullptr;
 
         // set null pointer for previous node
         node.prev = nullptr;
@@ -58,6 +57,10 @@ void SpatialHash::mapToGrid(int i, Vector2 pos)
 
         // set grid[row][col] to point to node
         grid[row][col] = &node;
+
+        // set new row and col of node
+        node.row = row;
+        node.col = col;
 
     }
 }

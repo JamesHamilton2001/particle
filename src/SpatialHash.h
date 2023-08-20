@@ -14,8 +14,10 @@ class SpatialHash
     void init(int count, int size);
 
     void mapToGrid(int i, Vector2 pos);
+    void rowColHash(Vector2 pos, int& row, int& col);
 
     struct Node {
+        int index;
         int row;
         int col;
         Node* prev;
@@ -29,7 +31,5 @@ class SpatialHash
 
     int count;
     int size;
-
-    void rowColHash(Vector2 pos, int& row, int& col);
 
 };
