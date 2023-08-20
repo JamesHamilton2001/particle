@@ -3,6 +3,8 @@
 #include <raylib.h>
 #include <raymath.h>
 
+#include <vector>
+
 /* NOTES
     - the infuential radius of a particle (outer radius) is 1.0f
     - resistance of a particle is scaled by the inner radius
@@ -21,7 +23,6 @@ public:
 
     void init(int count, int size);
     void update();
-    void randomise();
 
     int count;
     int size;
