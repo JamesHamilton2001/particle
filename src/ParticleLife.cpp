@@ -47,19 +47,26 @@ void ParticleLife::init(int count, int size)
 
 void ParticleLife::update()
 {
-    // cache resistance values
+    // cached values
     float resistances[3] = {
         resistance*innerRadii[0],
         resistance*innerRadii[1],
         resistance*innerRadii[2]
     };
+    float peaks[3] = {
+        2.0f * (innerRadii[0] + (1.0f-innerRadii[0])/2.0f),
+        2.0f * (innerRadii[1] + (1.0f-innerRadii[1])/2.0f),
+        2.0f * (innerRadii[2] + (1.0f-innerRadii[2])/2.0f)
+    };
+
+
 
     // for each particle
     for (int i = 0; i < count; i++) {
 
         // cached variables
         int type = types[i];
-        float innerRadius = innerRadii[type];
+        float innerDiameter = 2.0f * innerRadii[type];
         float xPos = positions[i].x;
         float yPos = positions[i].y;
         float xVelInc = 0.0f;
@@ -79,10 +86,10 @@ void ParticleLife::update()
             if (sqDist <= 4.0f) {
                 float distance = sqrtf(sqDist);
 
-                // get repulsions or attraction force from inner and outer radius cross over
-                float reactionCoef = (distance <= innerRadius)
-                    ? 1.0f - innerRadius / distance
-                    : attractionArray[types[j]] * (2.0f - distance);
+                // repulse if in inner radius
+                float reactionCoef = (distance <= innerDiameter)
+                    ? 1.0f - innerDiameter / distance
+                    :  attractionArray[types[j]] * (distance-peaks[types[j]]);
                 
                 // apply normalised force to other particle
                 float xForce = reactionCoef * xDist / distance;
