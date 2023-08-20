@@ -28,36 +28,40 @@ void Gui::init(ParticleLife &particleLife, Canvas &canvas)
 {
     // int windowWidth = GetScreenWidth();
     float windowHeight = GetScreenHeight();
-    Vector2 position;
+    Vector2 pos;
 
-    // randomise button
-    position = { 100, windowHeight - 250 };
-    initButton(randomiseButton, position, "Randomise", &ParticleLife::randomise);
+    // randomise buttons
+    pos = { 100, windowHeight - 300 };
+    initButton(randomTypesButton, pos, "Types", &Canvas::randomiseTypes);
+    pos.y += 30;
+    initButton(randomPositionsButton, pos, "Positions", &Canvas::randomisePositions);
+    pos.y += 30;
+    initButton(randomVelocitiesButton, pos, "Velocities", &Canvas::randomiseVelocities);
 
     // grid check box
-    position.y += 30;
-    initLabel(gridLabel, position, "Grid");
-    initCheckBox(gridCheckBox, position, &canvas.drawGrid);
+    pos.x = 100; pos.y += 30;
+    initLabel(gridLabel, pos, "Grid");
+    initCheckBox(gridCheckBox, pos, &canvas.drawGrid);
 
     // step float box
-    position.y += 30;
-    initLabel(stepLabel, position, "Step");
-    initFloatBox(stepFloatBox, position, &particleLife.step, 0, 1);
+    pos.y += 30;
+    initLabel(stepLabel, pos, "Step");
+    initFloatBox(stepFloatBox, pos, &particleLife.step, 0, 1);
 
     // resistance float box
-    position.y += 30;
-    initLabel(resistanceLabel, position, "Resistance");
-    initFloatBox(resistanceFloatBox, position, &particleLife.resistance, 0, 1);
+    pos.y += 30;
+    initLabel(resistanceLabel, pos, "Resistance");
+    initFloatBox(resistanceFloatBox, pos, &particleLife.resistance, 0, 1);
 
     // inner radii float set
-    position.y += 30;
-    initLabel(innerRadiiLabel, position, "Inner Radii");
-    initFloatSet(innerRadiiFloatSet, position, particleLife.innerRadii, 0, 1);
+    pos.y += 30;
+    initLabel(innerRadiiLabel, pos, "Inner Radii");
+    initFloatSet(innerRadiiFloatSet, pos, particleLife.innerRadii, 0, 1);
 
     // attraction float matrix
-    position.y += 30;
-    initLabel(attractionsLabel, position, "Attractions");
-    initFloatMat(attractionsMat, position, particleLife.attractions, -1, 1);
+    pos.y += 30;
+    initLabel(attractionsLabel, pos, "Attractions");
+    initFloatMat(attractionsMat, pos, particleLife.attractions, -1, 1);
 }
 
 void Gui::updateRender(ParticleLife& particleLife, Canvas& canvas)
@@ -68,7 +72,9 @@ void Gui::updateRender(ParticleLife& particleLife, Canvas& canvas)
     handleLabel(innerRadiiLabel);
     handleLabel(attractionsLabel);
 
-    handleButton(randomiseButton, particleLife);
+    handleButton(randomTypesButton, canvas);
+    handleButton(randomPositionsButton, canvas);
+    handleButton(randomVelocitiesButton, canvas);
     handleCheckBox(gridCheckBox);
     handleFloatBox(stepFloatBox);
     handleFloatBox(resistanceFloatBox);
@@ -123,10 +129,10 @@ void Gui::handleLabel(Label& label)
     GuiDrawText(label.text, label.bounds, TEXT_ALIGN_RIGHT, WHITE);
 }
 
-void Gui::handleButton(Button& button, ParticleLife& particleLife)
+void Gui::handleButton(Button& button, Canvas& canvas)
 {
     if (GuiButton(button.bounds, button.text))
-        (particleLife.*button.func)();
+        (canvas.*button.func)();
 }
 
 void Gui::handleCheckBox(CheckBox& checkBox)

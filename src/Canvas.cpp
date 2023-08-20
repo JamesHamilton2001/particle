@@ -108,23 +108,31 @@ void Canvas::draw()
 void Canvas::randomisePositions()
 {
     int scaledMax = 2*gridSize * 100;
+
     for (int i = 0; i < particleCount; i++)
         particlePositions[i] = { GetRandomValue(0, scaledMax)/100.0f,
                                  GetRandomValue(0, scaledMax)/100.0f };
 }
 
+// TODO: scale velocity with step, usually too slow/fast at the moment. also just reverses??
 void Canvas::randomiseVelocities()
 {
-    int scaledMax = 2*PI * 100;
+    int scaledPI = 1000*PI;
+
     for (int i = 0; i < particleCount; i++) {
-        float angle = GetRandomValue(0, scaledMax) / 100.f;
-        particleVelocities[i] = { -cosf(angle), sinf(angle) };
+        float angle = GetRandomValue(0, 2000) / scaledPI;
+
+        particleVelocities[i].x *= sinf(angle);
+        particleVelocities[i].y *= -cosf(angle);
     }
 }
 
 void Canvas::randomiseTypes()
 {
-    int dif = GetRandomValue(0, 2);
+    // int dif = (GetRandomValue(0, 1)) ? 1 : -1;
+    // for (int i = 0; i < particleCount; i++)
+    //     particleTypes[i] = (i+dif) % 3;
+
     for (int i = 0; i < particleCount; i++)
-        particleTypes[i] = (i+dif) % 3;
+        particleTypes[i] = GetRandomValue(0, 2);
 }

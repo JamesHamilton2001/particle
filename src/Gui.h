@@ -30,7 +30,7 @@ class Gui
     struct Label   { Rectangle bounds; char text[LABEL_BUF_LEN]; };
     struct Element { Rectangle bounds; };
     
-    typedef void (ParticleLife::*ButtonFunc)();
+    typedef void (Canvas::*ButtonFunc)();
     struct Button   : Label     { ButtonFunc func; };
     struct CheckBox : Element   { bool* valuePtr; };
     struct FloatBox : Element   { float* valuePtr; int min; int max; bool editMode; };
@@ -43,7 +43,9 @@ class Gui
     Label innerRadiiLabel;
     Label attractionsLabel;
 
-    Button randomiseButton;
+    Button randomTypesButton;
+    Button randomPositionsButton;
+    Button randomVelocitiesButton;
     CheckBox gridCheckBox;
     FloatBox stepFloatBox;
     FloatBox resistanceFloatBox;
@@ -58,7 +60,7 @@ class Gui
     void initFloatMat(FloatMat& floatMat, Vector2 position, float valueMat[3][3], int min, int max);
 
     void handleLabel(Label& label);
-    void handleButton(Button& button, ParticleLife& particleLife);
+    void handleButton(Button& button, Canvas& canvas);
     void handleCheckBox(CheckBox& checkBox);
     void handleFloatBox(FloatBox& floatBox);
     void handleFloatSet(FloatSet& floatSet);
