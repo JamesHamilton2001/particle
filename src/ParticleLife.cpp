@@ -32,7 +32,7 @@ void ParticleLife::init(int count, int size)
     innerRadii[0] = 0.25f;
     innerRadii[1] = 0.50f;
     innerRadii[2] = 0.75f;
-    resistance = 0.0022f;
+    resistance = 0.001f;
     attractions[0][0] = -0.05f;  attractions[0][1] =  0.05f;  attractions[0][2] =  0.10f;
     attractions[1][0] =  0.10f;  attractions[1][1] = -0.05f;  attractions[1][2] =  0.05f;
     attractions[2][0] =  0.05f;  attractions[2][1] =  0.10f;  attractions[2][2] = -0.05f;
@@ -48,12 +48,13 @@ void ParticleLife::init(int count, int size)
 void ParticleLife::update()
 {
     // cached values
-    float resistances[3] = {
-        resistance*innerRadii[0],
-        resistance*innerRadii[1],
-        resistance*innerRadii[2]
-    };
-    float peaks[3] = {
+    // float resistances[3] = {
+    //     resistance*innerRadii[0],
+    //     resistance*innerRadii[1],
+    //     resistance*innerRadii[2]
+    // };
+    const float invResistance = 1.0f - resistance;
+    const float peaks[3] = {
         2.0f * (innerRadii[0] + (1.0f-innerRadii[0])/2.0f),
         2.0f * (innerRadii[1] + (1.0f-innerRadii[1])/2.0f),
         2.0f * (innerRadii[2] + (1.0f-innerRadii[2])/2.0f)
@@ -108,13 +109,13 @@ void ParticleLife::update()
     for (int i = 0; i < count; i++) {
 
         // cache variables
-        float resistance = 1.0f - resistances[types[i]];
+        // float resistance = 1.0f - resistances[types[i]];
         float xVelocity = newVelocities[i].x;
         float yVelocity = newVelocities[i].y;
 
         // apply friction
-        xVelocity *= resistance;
-        yVelocity *= resistance;
+        xVelocity *= invResistance;
+        yVelocity *= invResistance;
 
         // apply movement
         positions[i].x += step * xVelocity;
