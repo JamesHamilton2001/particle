@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SpatialHash.h"
+
 #include <raylib.h>
 #include <raymath.h>
 
@@ -27,6 +29,8 @@ public:
     int count;
     int size;
     float bounds;
+    
+    SpatialHash spatialHash;
 
     int* types;
     Vector2* positions;

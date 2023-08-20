@@ -1,5 +1,7 @@
 #include "ParticleLife.h"
 
+#include "SpatialHash.h"
+
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
@@ -21,11 +23,16 @@ ParticleLife::~ParticleLife()
 
 void ParticleLife::init(int count, int size)
 {
-    // settings
+    // simulation settings
     this->count = count;
     this->size = size;
     bounds = 2.0f * size;
     step = 0.00005f;
+
+    // spatial hash grid
+    spatialHash.init(count, size);
+
+    // particle settings
     colours[0] = RED;
     colours[1] = GREEN;
     colours[2] = BLUE;
@@ -60,6 +67,10 @@ void ParticleLife::update()
         2.0f * (innerRadii[1] + (1.0f-innerRadii[1])/2.0f),
         2.0f * (innerRadii[2] + (1.0f-innerRadii[2])/2.0f)
     };
+
+    // map particles to spatial hash
+    for (int i = 0; i < count; i++)
+        spatialHash.mapToGrid(i, positions[i]);
 
     // for each particle
     for (int i = 0; i < count; i++) {
