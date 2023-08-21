@@ -60,26 +60,27 @@ void ParticleLife::init(int count, int size)
 
 void ParticleLife::update()
 {
-    // cached variables
-    const float invResistance = 1.0f - resistance;
+    calculateForces();
+    applyForces();
+}
+
+void ParticleLife::calculateForces()
+{
+    // cache peak attraction points
     const float peaks[3] = {
         2.0f * (innerRadii[0] + (1.0f-innerRadii[0])/2.0f),
         2.0f * (innerRadii[1] + (1.0f-innerRadii[1])/2.0f),
         2.0f * (innerRadii[2] + (1.0f-innerRadii[2])/2.0f)
     };
 
-    // map particles to spatial hash
-    for (int i = 0; i < count; i++)
-        spatialHash.mapToGrid(i, positions[i]);
-
     // for each particle
     for (int i = 0; i < count; i++) {
 
-        // cached variables
-        int type = types[i];
-        float innerDiameter = 2.0f * innerRadii[type];
-        float xPos = positions[i].x;
-        float yPos = positions[i].y;
+        // cache particle variables
+        const int type = types[i];
+        const float innerDiameter = 2.0f * innerRadii[type];
+        const float xPos = positions[i].x;
+        const float yPos = positions[i].y;
         float xVelInc = 0.0f;
         float yVelInc = 0.0f;
 
@@ -111,9 +112,17 @@ void ParticleLife::update()
                 velocities[j].y -= yForce;
             }
         }
+
+        // apply accumulative force to original particle
         velocities[i].x += xVelInc;
         velocities[i].y += yVelInc;
     }
+}
+
+void ParticleLife::applyForces()
+{
+    // cache inversed resistance
+    const float invResistance = 1.0f - resistance;
 
     // for each particle
     for (int i = 0; i < count; i++) {

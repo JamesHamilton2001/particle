@@ -18,20 +18,14 @@
 
 class ParticleLife
 {
-public:
+ public:
 
     ParticleLife();
     ~ParticleLife();
 
     void init(int count, int size);
     void update();
-
-    int count;
-    int size;
-    float bounds;
     
-    SpatialHash spatialHash;
-
     int* types;
     Vector2* positions;
     Vector2* velocities;
@@ -41,6 +35,17 @@ public:
     float innerRadii[3];
     float attractions[3][3];
     Color colours[3];
+
+    int count;
+    int size;
+    float bounds;
+
+ private:
+
+    SpatialHash spatialHash;
+
+    void calculateForces();
+    void applyForces();
 
 };
 
