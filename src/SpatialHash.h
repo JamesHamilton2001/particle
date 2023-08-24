@@ -13,23 +13,14 @@ class SpatialHash
 
     void init(int count, int size);
 
-    void mapToGrid(int i, Vector2 pos);
-    void rowColHash(Vector2 pos, int& row, int& col);
+    void mapGrid(int count, Vector2* positions);
+    void rowColHash(Vector2 pos, int& r, int& c);
 
-    struct Node {
-        int index;
-        int row;
-        int col;
-        Node* prev;
-        Node* next;
-    };
-
-    Node* nodes;
-    Node*** grid;
+    int** counts;
+    std::vector<int>** indexes;
 
  private:
-
-    int count;
+    
     int size;
 
 };
