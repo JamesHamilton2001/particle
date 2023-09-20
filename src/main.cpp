@@ -18,11 +18,13 @@ int fpsLimit;
 
 int count;
 int size;
+bool paused;
 
 ParticleLife particleLife;
 Camera2D camera;
 Canvas canvas;
 Gui gui;
+
 
 
 void init();
@@ -45,8 +47,13 @@ int main()
 
 void update()
 {
+    if (IsKeyPressed(KEY_SPACE))
+        paused = !paused;
+
     canvas.update(camera);
-    particleLife.update();
+
+    if (!paused)
+        particleLife.update();
 }
 
 void render()
@@ -77,6 +84,7 @@ void init()
     count = 1536;
     size = 12;
     particleLife.init(count, size);
+    paused = false;
 
     // camera
     camera.offset = { windowWidth/2.0f, windowHeight/2.0f };

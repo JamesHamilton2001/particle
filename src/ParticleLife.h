@@ -1,7 +1,5 @@
 #pragma once
 
-#include "SpatialHash.h"
-
 #include <raylib.h>
 #include <raymath.h>
 
@@ -41,8 +39,6 @@ class ParticleLife
     float bounds;
 
  private:
-
-    SpatialHash spatialHash;
 
     void calculateForces();
     void applyForces();
