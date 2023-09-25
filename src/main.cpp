@@ -47,11 +47,14 @@ int main()
 
 void update()
 {
+    // update pause on space
     if (IsKeyPressed(KEY_SPACE))
         paused = !paused;
 
+    // update canvas
     canvas.update(camera);
 
+    // update simulation if not paused
     if (!paused)
         particleLife.update();
 }
@@ -61,10 +64,12 @@ void render()
     BeginDrawing();
         ClearBackground(BLACK);
 
+        // draw simulation
         BeginMode2D(camera);
             canvas.draw();
         EndMode2D();
 
+        // draw ui
         gui.updateRender(particleLife, canvas);
         DrawFPS(windowWidth - 80, 5);
 

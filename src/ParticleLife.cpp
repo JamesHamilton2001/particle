@@ -17,6 +17,13 @@ ParticleLife::~ParticleLife()
     delete [] types;
     delete [] positions;
     delete [] velocities;
+
+    for (int i = 0; i < size; i++) {
+        delete [] gridCounts[i];
+        delete [] gridIndexes[i];
+    }
+    delete [] gridCounts;
+    delete [] gridIndexes;
 }
 
 void ParticleLife::init(int count, int size)
@@ -44,9 +51,23 @@ void ParticleLife::init(int count, int size)
     positions = new Vector2[count];
     velocities = new Vector2[count];
 
+    // grid setup
+    gridCounts = new int*[size];
+    gridIndexes = new std::vector<int>*[size];
+    for (int i = 0; i < size; i++) {
+        gridCounts[i] = new int[size];
+        gridIndexes[i] = new std::vector<int>[size];
+        for (int j = 0; j < size; j++) {
+            gridCounts[i][j] = 0;
+            gridIndexes[i][j].resize(16);
+            for (int k = 0; k < 16; k++)
+                gridIndexes[i][j][k] = -1;
+        }
+    }
+
     // initial values
     for (int i = 0; i < count; i++) {
-        types[i] = i%3;
+        types[i] = i % 3;
         velocities[i] = { 0, 0 };
         positions[i] = { GetRandomValue(0, bounds*100) / 100.0f,
                          GetRandomValue(0, bounds*100) / 100.0f };
@@ -55,8 +76,33 @@ void ParticleLife::init(int count, int size)
 
 void ParticleLife::update()
 {
+    mapIndexGrid();
     calculateForces();
     applyForces();
+}
+
+int ParticleLife::rowColHash(float coord)
+{
+    return ((int)(coord/2.0f + size)) % size;
+}
+
+void ParticleLife::mapIndexGrid()
+{
+    // reset grid values
+    for (int r = 0; r < size; r++) {
+        for (int c = 0; c < size; c++) {
+            for (int i = 0; i < gridCounts[r][c]; i++)
+                gridIndexes[r][c][i] = -1;
+            gridCounts[r][c] = 0;
+        }
+    }
+
+    // recalculate grid values
+    for (int i = 0; i < count; i++) {
+        int r = rowColHash(positions[i].y);
+        int c = rowColHash(positions[i].x);
+        gridIndexes[r][c][gridCounts[r][c]++] = i;
+    }
 }
 
 void ParticleLife::calculateForces()
@@ -93,7 +139,7 @@ void ParticleLife::calculateForces()
             if (sqDist <= 4.0f) {
                 float distance = sqrtf(sqDist);
 
-                // repulse if in inner radius
+                // repulse if in inner radius, otherwise attract
                 float reactionCoef = (distance <= innerDiameter)
                     ? 1.0f - innerDiameter / distance
                     :  attractionArray[types[j]] * (distance-peaks[types[j]]);

@@ -28,6 +28,9 @@ class ParticleLife
     Vector2* positions;
     Vector2* velocities;
 
+    int** gridCounts;
+    std::vector<int>** gridIndexes;
+
     float step;
     float resistance;
     float innerRadii[3];
@@ -39,6 +42,9 @@ class ParticleLife
     float bounds;
 
  private:
+
+    int rowColHash(float coord);
+    void mapIndexGrid();
 
     void calculateForces();
     void applyForces();
