@@ -30,6 +30,7 @@ class ParticleLife
 
     int** gridCounts;
     std::vector<int>** gridIndexes;
+    std::vector<int>**** neighborhoods;
 
     float step;
     float resistance;
@@ -44,8 +45,8 @@ class ParticleLife
  private:
 
     int rowColHash(float coord);
-    void mapIndexGrid();
 
+    void mapNeighborhoods();
     void calculateForces();
     void applyForces();
 

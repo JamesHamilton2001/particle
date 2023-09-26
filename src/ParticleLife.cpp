@@ -14,16 +14,16 @@ ParticleLife::ParticleLife()
 
 ParticleLife::~ParticleLife()
 {
-    delete [] types;
-    delete [] positions;
-    delete [] velocities;
+    // delete [] types;
+    // delete [] positions;
+    // delete [] velocities;
 
-    for (int i = 0; i < size; i++) {
-        delete [] gridCounts[i];
-        delete [] gridIndexes[i];
-    }
-    delete [] gridCounts;
-    delete [] gridIndexes;
+    // for (int i = 0; i < size; i++) {
+    //     delete [] gridCounts[i];
+    //     delete [] gridIndexes[i];
+    // }
+    // delete [] gridCounts;
+    // delete [] gridIndexes;
 }
 
 void ParticleLife::init(int count, int size)
@@ -51,12 +51,31 @@ void ParticleLife::init(int count, int size)
     positions = new Vector2[count];
     velocities = new Vector2[count];
 
-    // grid setup
+    // 1st dimension setup
     gridCounts = new int*[size];
     gridIndexes = new std::vector<int>*[size];
+    neighborhoods = new std::vector<int>***[size];
+
+    // 2nd dimension setup
     for (int i = 0; i < size; i++) {
         gridCounts[i] = new int[size];
         gridIndexes[i] = new std::vector<int>[size];
+        neighborhoods[i] = new std::vector<int>**[size];
+
+        // 3rd dimension setup and defaults for neighborhoods
+        for (int j = 0; j < size; j++) {
+            neighborhoods[i][j] = new std::vector<int>*[8];
+            neighborhoods[i][j][0] = &gridIndexes[(i+size-1)%size][(j+size-1)%size];    // top left
+            neighborhoods[i][j][1] = &gridIndexes[i][(j+size-1)%size];                  // top middle
+            neighborhoods[i][j][2] = &gridIndexes[(i+size+1)%size][(j+size-1)%size];    // top right
+            neighborhoods[i][j][3] = &gridIndexes[i][(j+size-1)%size];                  // middle left
+            neighborhoods[i][j][4] = &gridIndexes[i][(j+size+1)%size];                  // middle left
+            neighborhoods[i][j][5] = &gridIndexes[(i+size-1)%size][(j+size+1)%size];    // bottom left
+            neighborhoods[i][j][6] = &gridIndexes[i][(j+size+1)%size];                  // bottom middle
+            neighborhoods[i][j][7] = &gridIndexes[(i+size+1)%size][(j+size+1)%size];    // bottom right
+        }
+
+        // count and index default values
         for (int j = 0; j < size; j++) {
             gridCounts[i][j] = 0;
             gridIndexes[i][j].resize(16);
@@ -76,17 +95,17 @@ void ParticleLife::init(int count, int size)
 
 void ParticleLife::update()
 {
-    mapIndexGrid();
+    mapNeighborhoods();
     calculateForces();
     applyForces();
 }
 
 int ParticleLife::rowColHash(float coord)
 {
-    return ((int)(coord/2.0f + size)) % size;
+    return (int)(coord/2.0f + size) % size;
 }
 
-void ParticleLife::mapIndexGrid()
+void ParticleLife::mapNeighborhoods()
 {
     // reset grid values
     for (int r = 0; r < size; r++) {
@@ -109,9 +128,9 @@ void ParticleLife::calculateForces()
 {
     // cache peak attraction points
     const float peaks[3] = {
-        2.0f * (innerRadii[0] + (1.0f-innerRadii[0])/2.0f),
-        2.0f * (innerRadii[1] + (1.0f-innerRadii[1])/2.0f),
-        2.0f * (innerRadii[2] + (1.0f-innerRadii[2])/2.0f)
+        2.0f * (innerRadii[0] + (1.0f-innerRadii[0]) / 2.0f),
+        2.0f * (innerRadii[1] + (1.0f-innerRadii[1]) / 2.0f),
+        2.0f * (innerRadii[2] + (1.0f-innerRadii[2]) / 2.0f)
     };
 
     // for each particle
